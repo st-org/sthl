@@ -24,14 +24,39 @@ const shell=new Shell('Test','',css)
             scopeNameToEmbeddedLanguageName:{
                 'meta.embedded.block.stdn':'stdn'
             }
+        },
+        {
+            name:'js',
+            alias:['javascript'],
+            rootScopeName:'source.js',
+            syntaxSrc:'https://cdn.jsdelivr.net/gh/textmate/javascript.tmbundle/Syntaxes/JavaScript.plist'
         }
     ])
-    const ele=await highlighter.highlight(`# Test
+    const pre=await highlighter.highlight(`# Test
 \`\`\`stdn
     {level 1,label test,heading[test]}
+    {level 1,label test2,heading[test]}
 \`\`\`
 `,'md')
-    if(ele!==undefined){
-        shell.append(ele)
+    if(pre!==undefined){
+        shell.append(pre)
+    }
+    const pre2=await highlighter.highlight(`function sayHello(name) {
+    const out={
+        value:'Hello, '+name,
+        type:'string',
+    }
+    return out
+}
+
+class Test{
+    constructor(){}
+}`,'js')
+    if(pre2!==undefined){
+        shell.append(pre2)
+    }
+    const code=await highlighter.highlight(`{label test,ref[]}`,'stdn')
+    if(code!==undefined){
+        shell.append(code)
     }
 })()
