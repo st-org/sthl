@@ -1,0 +1,37 @@
+{
+  "name": "sthl",
+  "version": "0.0.0",
+  "description": "Simple Text Syntax Highlighter",
+  "main": "dist/mod.js",
+  "scripts": {
+    "pkg": "node scripts/pkg-css.js",
+    "build": "npm run pkg && tsc && webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/st-org/sthl.git"
+  },
+  "author": "ddu6",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/st-org/sthl/issues"
+  },
+  "homepage": "https://github.com/st-org/sthl#readme",
+  "devDependencies": {
+    "@ddu6/stui": "latest",
+    "@types/node": "^16.3.3",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.5",
+    "webpack": "^5.45.1",
+    "webpack-cli": "^4.7.2"
+  },
+  "dependencies": {
+    "stce": "^0.0.5",
+    "vscode-oniguruma": "^1.5.1",
+    "vscode-textmate": "^5.4.0"
+  },
+  "engines": {
+    "node": "^14.0.0",
+    "npm": "^7.0.0"
+  }
+}
