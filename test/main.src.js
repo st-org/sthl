@@ -1,7 +1,6 @@
 import {Shell} from '@ddu6/stui'
 import {Highlighter,css} from '../dist/mod'
 const shell=new Shell('Test','',css)
-window.shell=shell
 ;(async()=>{
     const highlighter=new Highlighter([
         {
@@ -27,7 +26,7 @@ window.shell=shell
             }
         }
     ])
-    const ele=await highlighter.highlight(`# First
+    const ele=await highlighter.highlight(`# Test
 \`\`\`stdn
     {level 1,label test,heading[test]}
 \`\`\`
