@@ -38,9 +38,6 @@ const shell=new Shell('Test','',css)
     {level 1,label test2,heading[test]}
 \`\`\`
 `,'md')
-    if(pre!==undefined){
-        shell.append(pre)
-    }
     const pre2=await highlighter.highlight(`function sayHello(name) {
     const out={
         value:'Hello, '+name,
@@ -52,11 +49,16 @@ const shell=new Shell('Test','',css)
 class Test{
     constructor(){}
 }`,'js')
-    if(pre2!==undefined){
-        shell.append(pre2)
-    }
     const code=await highlighter.highlight(`{label test,ref[]}`,'stdn')
-    if(code!==undefined){
-        shell.append(code)
-    }
+    const plain=await highlighter.highlight(`# Test
+\`\`\`stdn
+    {level 1,label test,heading[test]}
+    {level 1,label test2,heading[test]}
+\`\`\`
+`,'non')
+    shell
+    .append(pre)
+    .append(pre2)
+    .append(code)
+    .append(plain)
 })()

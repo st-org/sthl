@@ -30,5 +30,6 @@ export declare class Highlighter {
     };
     readonly registry: vsctm.Registry;
     constructor(langInfoArray: LangInfo[]);
-    highlight(text: string, languageName: string): Promise<HTMLElement | undefined>;
+    highlight(text: string, languageName: string): Promise<HTMLElement | HTMLPreElement>;
+    static textToPlainCode(text: string): HTMLElement | HTMLPreElement;
 }

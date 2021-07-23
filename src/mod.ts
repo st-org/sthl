@@ -118,15 +118,15 @@ export class Highlighter{
     async highlight(text:string,languageName:string){
         const id=this.languageNameToLanguageId[languageName]
         if(id===undefined){
-            return undefined
+            return Highlighter.textToPlainCode(text)
         }
         const rootScopeName=this.languageIdToRootScopeName[id]
         if(rootScopeName===undefined){
-            return undefined
+            return Highlighter.textToPlainCode(text)
         }
         const grammar=await this.registry.loadGrammarWithConfiguration(rootScopeName,id,{embeddedLanguages:this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeName]})
         if(grammar===null){
-            return undefined
+            return Highlighter.textToPlainCode(text)
         }
         const lines=text.split('\n')
         const out=lines.length>0?new CommonEle('pre'):new CommonEle('code')
@@ -166,6 +166,26 @@ export class Highlighter{
             ruleStack = lineTokens.ruleStack
             out.append(
                 lineSpan
+                .append(contentSpan)
+            )
+        }
+        return out.element
+    }
+    static textToPlainCode(text:string){
+        const lines=text.split('\n')
+        const out=lines.length>0?new CommonEle('pre'):new CommonEle('code')
+        for(const line of lines){
+            const content=line.trimStart()
+            const padding=line.slice(0,line.length-content.length)
+            const contentSpan=new Span(['content'])
+            .setText(content)
+            contentSpan.setHTML(
+                contentSpan.element.innerHTML
+                .replace(/([^<]\/+|[(){}\[\]])/g,'$1<wbr>')
+            )
+            out.append(
+                new Span(['line'])
+                .setText(padding)
                 .append(contentSpan)
             )
         }

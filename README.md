@@ -28,14 +28,12 @@ const shell=new Shell('Test','',css)
             }
         }
     ])
-    const ele=await highlighter.highlight(`# Test
+    const element=await highlighter.highlight(`# Test
 \`\`\`stdn
     {level 1,label test,heading[test]}
 \`\`\`
 `,'md')
-    if(ele!==undefined){
-        shell.append(ele)
-    }
+    shell.append(element)
 })()
 
 // Of course, to run the above codes in browser, you need a bundler like webpack.
