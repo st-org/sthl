@@ -21,27 +21,19 @@ async function createOnigLib(){
     return onigLib
 }
 export class Highlighter{
-    readonly rootScopeNameToInjectedRootScopeNames:{
+    readonly scopeNameToInjectedScopeNames:{
         [key:string]:string[]|undefined
     }={}
-    readonly languageNameToLanguageId:{
-        [key:string]:number|undefined
-    }={}
-    readonly rootScopeNameToScopeNameToEmbeddedLanguageId:{
-        [key:string]:{
-            [key:string]:number
-        }|undefined
-    }={}
-    readonly rootScopeNameToSyntaxSrc:{
+    readonly scopeNameToSyntaxSrc:{
         [key:string]:string|undefined
     }={}
-    readonly languageIdToRootScopeName:{
-        [key:number]:string|undefined
+    readonly languageNameToRootScopeName:{
+        [key:string]:string|undefined
     }={}
     readonly registry=new vsctm.Registry({
         onigLib:createOnigLib(),
-        loadGrammar:async rootScopeName=>{
-            const src=this.rootScopeNameToSyntaxSrc[rootScopeName]
+        loadGrammar:async scopeName=>{
+            const src=this.scopeNameToSyntaxSrc[scopeName]
             if(src===undefined){
                 return null
             }
@@ -56,84 +48,46 @@ export class Highlighter{
                 return null
             }
         },
-        getInjections:rootScopeName=>{
-            return this.rootScopeNameToInjectedRootScopeNames[rootScopeName]
+        getInjections:scopeName=>{
+            return this.scopeNameToInjectedScopeNames[scopeName]
         }
     })
     constructor(langInfoArray:LangInfo[],readonly theme:Theme=[]){
         for(let i=0;i<langInfoArray.length;i++){
-            const {name,alias,rootScopeName,syntaxSrc}=langInfoArray[i]
-            if(rootScopeName!==undefined&&syntaxSrc!==undefined){
-                this.rootScopeNameToSyntaxSrc[rootScopeName]=syntaxSrc
+            const {name,alias,scopeName,syntaxSrc}=langInfoArray[i]
+            if(scopeName!==undefined&&syntaxSrc!==undefined){
+                this.scopeNameToSyntaxSrc[scopeName]=syntaxSrc
             }
             if(name===undefined){
                 continue
             }
-            let id=this.languageNameToLanguageId[name]
-            if(id===undefined){
-                id=i+2
-                this.languageNameToLanguageId[name]=id
+            let rootScopeName=this.languageNameToRootScopeName[name]
+            if(rootScopeName===undefined){
+                this.languageNameToRootScopeName[name]=rootScopeName=scopeName
             }
             for(const name of alias??[]){
-                this.languageNameToLanguageId[name]=id
-            }
-            if(this.languageIdToRootScopeName[id]===undefined){
-                this.languageIdToRootScopeName[id]=rootScopeName
+                this.languageNameToRootScopeName[name]=rootScopeName
             }
         }
-        for(const {
-            rootScopeName,
-            rootScopeNamesToInject,
-            scopeNameToEmbeddedLanguageName
-        } of langInfoArray){
-            if(rootScopeName==undefined){
+        for(const {scopeName,scopeNamesToInject} of langInfoArray){
+            if(scopeName==undefined){
                 continue
             }
-            let scopeNameToEmbeddedLanguageId=this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeName]
-            if(scopeNameToEmbeddedLanguageId===undefined){
-                this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeName]=scopeNameToEmbeddedLanguageId={}
-            }
-            const newScopeNameToEmbeddedLanguageId:{
-                [key: string]: number
-            }={}
-            if(scopeNameToEmbeddedLanguageName!==undefined){
-                for(const scopeName of Object.keys(scopeNameToEmbeddedLanguageName)){
-                    const name=scopeNameToEmbeddedLanguageName[scopeName]
-                    if(name===undefined){
-                        continue
-                    }
-                    const id=this.languageNameToLanguageId[name]
-                    if(id===undefined){
-                        continue
-                    }
-                    newScopeNameToEmbeddedLanguageId[scopeName]=id
+            for(const scopeNameToInject of scopeNamesToInject??[]){
+                let injectedScopeNames=this.scopeNameToInjectedScopeNames[scopeNameToInject]
+                if(injectedScopeNames===undefined){
+                    this.scopeNameToInjectedScopeNames[scopeNameToInject]=injectedScopeNames=[]
                 }
-            }
-            Object.assign(scopeNameToEmbeddedLanguageId,newScopeNameToEmbeddedLanguageId)
-            for(const rootScopeNameToInject of rootScopeNamesToInject??[]){
-                let scopeNameToEmbeddedLanguageId=this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeNameToInject]
-                if(scopeNameToEmbeddedLanguageId===undefined){
-                    this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeNameToInject]=scopeNameToEmbeddedLanguageId={}
-                }
-                Object.assign(scopeNameToEmbeddedLanguageId,newScopeNameToEmbeddedLanguageId)
-                let injectedRootScopeNames=this.rootScopeNameToInjectedRootScopeNames[rootScopeNameToInject]
-                if(injectedRootScopeNames===undefined){
-                    this.rootScopeNameToInjectedRootScopeNames[rootScopeNameToInject]=injectedRootScopeNames=[]
-                }
-                injectedRootScopeNames.push(rootScopeName)
+                injectedScopeNames.push(scopeName)
             }
         }
     }
     async highlight(text:string,languageName:string){
-        const id=this.languageNameToLanguageId[languageName]
-        if(id===undefined){
-            return Highlighter.textToPlainCode(text)
-        }
-        const rootScopeName=this.languageIdToRootScopeName[id]
+        const rootScopeName=this.languageNameToRootScopeName[languageName]
         if(rootScopeName===undefined){
             return Highlighter.textToPlainCode(text)
         }
-        const grammar=await this.registry.loadGrammarWithConfiguration(rootScopeName,id,{embeddedLanguages:this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeName]})
+        const grammar=await this.registry.loadGrammar(rootScopeName)
         if(grammar===null){
             return Highlighter.textToPlainCode(text)
         }

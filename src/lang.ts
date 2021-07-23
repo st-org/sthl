@@ -2,12 +2,9 @@ import {parse} from 'json5'
 export interface LangInfo{
     name?:string
     alias?:string[]
-    rootScopeName?:string
+    scopeName?:string
     syntaxSrc?:string
-    rootScopeNamesToInject?:string[]
-    scopeNameToEmbeddedLanguageName?:{
-        [key:string]:string|undefined
-    }
+    scopeNamesToInject?:string[]
 }
 export interface VSEC{
     contributes?:{
@@ -16,9 +13,6 @@ export interface VSEC{
             scopeName:string
             path:string
             injectTo?:string[]
-            embeddedLanguages?:{
-                [key:string]:string
-            }
         }[]
     }
 }
@@ -36,7 +30,7 @@ export function extractLangInfoArrayFromVSEC(vsec:VSEC,dir=''){
     }
     grammars.reverse()
     const out:LangInfo[]=[]
-    for(const {language,scopeName,path,injectTo,embeddedLanguages} of grammars){
+    for(const {language,scopeName,path,injectTo} of grammars){
         let syntaxSrc=path
         try{
             syntaxSrc=new URL(path,dir).href
@@ -45,10 +39,9 @@ export function extractLangInfoArrayFromVSEC(vsec:VSEC,dir=''){
         }
         out.push({
             name:language,
-            rootScopeName:scopeName,
+            scopeName:scopeName,
             syntaxSrc,
-            rootScopeNamesToInject:injectTo,
-            scopeNameToEmbeddedLanguageName:embeddedLanguages
+            scopeNamesToInject:injectTo
         })
     }
     return out

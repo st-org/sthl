@@ -13,7 +13,7 @@ export function extractLangInfoArrayFromVSEC(vsec, dir = '') {
     }
     grammars.reverse();
     const out = [];
-    for (const { language, scopeName, path, injectTo, embeddedLanguages } of grammars) {
+    for (const { language, scopeName, path, injectTo } of grammars) {
         let syntaxSrc = path;
         try {
             syntaxSrc = new URL(path, dir).href;
@@ -23,10 +23,9 @@ export function extractLangInfoArrayFromVSEC(vsec, dir = '') {
         }
         out.push({
             name: language,
-            rootScopeName: scopeName,
+            scopeName: scopeName,
             syntaxSrc,
-            rootScopeNamesToInject: injectTo,
-            scopeNameToEmbeddedLanguageName: embeddedLanguages
+            scopeNamesToInject: injectTo
         });
     }
     return out;

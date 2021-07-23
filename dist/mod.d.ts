@@ -6,22 +6,14 @@ export * from './theme';
 export { all as css } from './lib/css';
 export declare class Highlighter {
     readonly theme: Theme;
-    readonly rootScopeNameToInjectedRootScopeNames: {
+    readonly scopeNameToInjectedScopeNames: {
         [key: string]: string[] | undefined;
     };
-    readonly languageNameToLanguageId: {
-        [key: string]: number | undefined;
-    };
-    readonly rootScopeNameToScopeNameToEmbeddedLanguageId: {
-        [key: string]: {
-            [key: string]: number;
-        } | undefined;
-    };
-    readonly rootScopeNameToSyntaxSrc: {
+    readonly scopeNameToSyntaxSrc: {
         [key: string]: string | undefined;
     };
-    readonly languageIdToRootScopeName: {
-        [key: number]: string | undefined;
+    readonly languageNameToRootScopeName: {
+        [key: string]: string | undefined;
     };
     readonly registry: vsctm.Registry;
     constructor(langInfoArray: LangInfo[], theme?: Theme);

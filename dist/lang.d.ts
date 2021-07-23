@@ -1,12 +1,9 @@
 export interface LangInfo {
     name?: string;
     alias?: string[];
-    rootScopeName?: string;
+    scopeName?: string;
     syntaxSrc?: string;
-    rootScopeNamesToInject?: string[];
-    scopeNameToEmbeddedLanguageName?: {
-        [key: string]: string | undefined;
-    };
+    scopeNamesToInject?: string[];
 }
 export interface VSEC {
     contributes?: {
@@ -15,9 +12,6 @@ export interface VSEC {
             scopeName: string;
             path: string;
             injectTo?: string[];
-            embeddedLanguages?: {
-                [key: string]: string;
-            };
         }[];
     };
 }
