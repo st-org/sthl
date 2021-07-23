@@ -1,3 +1,4 @@
+import {parse} from 'json5'
 export interface LangInfo{
     name?:string
     alias?:string[]
@@ -71,7 +72,7 @@ export async function extractLangInfoArrayFromVSECURLs(urls:string[],dir=''){
             if(!res.ok){
                 continue
             }
-            out.push(...extractLangInfoArrayFromVSEC(JSON.parse(await res.text()),url.href))
+            out.push(...extractLangInfoArrayFromVSEC(parse(await res.text()),url.href))
         }catch(err){
             console.log(err)
         }
@@ -90,7 +91,7 @@ export async function extractLangInfoArrayFromLangsURLs(urls:string[],dir=''){
             if(!res.ok){
                 continue
             }
-            const array:LangInfo[]=JSON.parse(await res.text())
+            const array:LangInfo[]=parse(await res.text())
             for(const info of array){
                 if(info.syntaxSrc!==undefined){
                     info.syntaxSrc=new URL(info.syntaxSrc,url).href

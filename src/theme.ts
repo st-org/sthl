@@ -1,3 +1,4 @@
+import {parse} from 'json5'
 interface Style{
     color?:string
     fontStyle?:string
@@ -64,7 +65,7 @@ export async function extractThemeFromVSTURLs(urls:string[],dir=''){
             if(!res.ok){
                 continue
             }
-            const vst:VST=JSON.parse(await res.text())
+            const vst:VST=parse(await res.text())
             if(typeof vst.include==='string'){
                 vst.include=[vst.include]
             }
@@ -90,7 +91,7 @@ export async function extractThemeFromThemeURLs(urls:string[],dir=''){
             if(!res.ok){
                 continue
             }
-            out.push(...JSON.parse(await res.text()))
+            out.push(...parse(await res.text()))
         }catch(err){
             console.log(err)
         }

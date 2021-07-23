@@ -1,5 +1,6 @@
 import * as vsctm from 'vscode-textmate'
 import * as oniguruma from 'vscode-oniguruma'
+import {parse} from 'json5'
 import {CommonEle, Span} from 'stce'
 import {LangInfo} from './lang'
 import {Theme} from './theme'
@@ -48,7 +49,7 @@ export class Highlighter{
                 const url=new URL(src)
                 const text=await (await fetch(src)).text()
                 if(url.pathname.endsWith('.json')){
-                    return JSON.parse(text)
+                    return parse(text)
                 }
                 return vsctm.parseRawGrammar(text)
             }catch(err){

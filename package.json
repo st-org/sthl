@@ -25,6 +25,7 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
+    "json5": "^2.2.0",
     "stce": "^0.0.5",
     "vscode-oniguruma": "^1.5.1",
     "vscode-textmate": "^5.4.0"

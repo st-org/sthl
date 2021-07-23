@@ -1,3 +1,4 @@
+import { parse } from 'json5';
 export function extractThemeFromVST(vst) {
     const { tokenColors } = vst;
     if (tokenColors === undefined) {
@@ -47,7 +48,7 @@ export async function extractThemeFromVSTURLs(urls, dir = '') {
             if (!res.ok) {
                 continue;
             }
-            const vst = JSON.parse(await res.text());
+            const vst = parse(await res.text());
             if (typeof vst.include === 'string') {
                 vst.include = [vst.include];
             }
@@ -74,7 +75,7 @@ export async function extractThemeFromThemeURLs(urls, dir = '') {
             if (!res.ok) {
                 continue;
             }
-            out.push(...JSON.parse(await res.text()));
+            out.push(...parse(await res.text()));
         }
         catch (err) {
             console.log(err);
