@@ -1,17 +1,9 @@
-export {all as css} from './lib/css'
 import * as vsctm from 'vscode-textmate'
 import * as oniguruma from 'vscode-oniguruma'
 import {CommonEle, Span} from 'stce'
-export interface LangInfo{
-    name:string
-    alias?:string[]
-    rootScopeName:string
-    syntaxSrc:string
-    rootScopeNamesToInject?:string[]
-    scopeNameToEmbeddedLanguageName?:{
-        [key:string]:string|undefined
-    }
-}
+import {LangInfo} from './lang'
+export * from './lang'
+export {all as css} from './lib/css'
 async function createOnigLib(){
     const buffer=await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.5.1/release/onig.wasm')).blob()).arrayBuffer()
     await oniguruma.loadWASM(buffer)
@@ -68,18 +60,32 @@ export class Highlighter{
     constructor(langInfoArray:LangInfo[]){
         for(let i=0;i<langInfoArray.length;i++){
             const {name,alias,rootScopeName,syntaxSrc}=langInfoArray[i]
-            this.languageNameToLanguageId[name]=i+2
-            for(const name of alias??[]){
-                this.languageNameToLanguageId[name]=i+2
+            if(rootScopeName!==undefined&&syntaxSrc!==undefined){
+                this.rootScopeNameToSyntaxSrc[rootScopeName]=syntaxSrc
             }
-            this.languageIdToRootScopeName[i+2]=rootScopeName
-            this.rootScopeNameToSyntaxSrc[rootScopeName]=syntaxSrc
+            if(name===undefined){
+                continue
+            }
+            let id=this.languageNameToLanguageId[name]
+            if(id===undefined){
+                id=i+2
+                this.languageNameToLanguageId[name]=id
+            }
+            for(const name of alias??[]){
+                this.languageNameToLanguageId[name]=id
+            }
+            if(this.languageIdToRootScopeName[id]===undefined){
+                this.languageIdToRootScopeName[id]=rootScopeName
+            }
         }
         for(const {
             rootScopeName,
             rootScopeNamesToInject,
             scopeNameToEmbeddedLanguageName
         } of langInfoArray){
+            if(rootScopeName==undefined){
+                continue
+            }
             let scopeNameToEmbeddedLanguageId=this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeName]
             if(scopeNameToEmbeddedLanguageId===undefined){
                 this.rootScopeNameToScopeNameToEmbeddedLanguageId[rootScopeName]=scopeNameToEmbeddedLanguageId={}
@@ -129,7 +135,7 @@ export class Highlighter{
             return Highlighter.textToPlainCode(text)
         }
         const lines=text.split('\n')
-        const out=lines.length>0?new CommonEle('pre'):new CommonEle('code')
+        const out=lines.length>1?new CommonEle('pre'):new CommonEle('code')
         let ruleStack = vsctm.INITIAL
         for (const line of lines) {
             let contentStart=false
@@ -147,6 +153,7 @@ export class Highlighter{
                 for(const scope of token.scopes){
                     const array=scope.split('.')
                     .map(val=>val.replace(/\s/g,'-'))
+                    const six='token-'+array.slice(0,6).join('-')
                     const five='token-'+array.slice(0,5).join('-')
                     const four='token-'+array.slice(0,4).join('-')
                     const three='token-'+array.slice(0,3).join('-')
@@ -158,6 +165,7 @@ export class Highlighter{
                         tokenSpan.classList.add(three)
                         tokenSpan.classList.add(four)
                         tokenSpan.classList.add(five)
+                        tokenSpan.classList.add(six)
                     }catch(err){
                         console.log(err)
                     }
@@ -178,7 +186,7 @@ export class Highlighter{
     }
     static textToPlainCode(text:string){
         const lines=text.split('\n')
-        const out=lines.length>0?new CommonEle('pre'):new CommonEle('code')
+        const out=lines.length>1?new CommonEle('pre'):new CommonEle('code')
         for(const line of lines){
             const content=line.trimStart()
             const padding=line.slice(0,line.length-content.length)

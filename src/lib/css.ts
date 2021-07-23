@@ -1,9 +1,4 @@
-export const line=`code>.line:empty::before,
-pre>.line:empty::before {
-    content: " ";
-}
-
-pre>.line {
+export const line=`pre>.line {
     display: block;
     white-space: pre;
     font-size: var(--length-font-span);
@@ -25,16 +20,9 @@ export const token=`/* comment */
     color: var(--color-comment);
 }
 
-/* number */
-.token-constant-numeric,
-.token-keyword-operator-minus-exponent,
-.token-keyword-operator-plus-exponent,
-.token-variable-other-enummember {
-    color: var(--color-number);
-}
-
 /* light */
-.token-entity-name-label {
+.token-entity-name-label,
+.token-punctuation-definition-tag {
     color: var(--color-light);
 }
 
@@ -57,29 +45,6 @@ export const token=`/* comment */
     font-style: italic;
 }
 
-/* variable & key */
-.token-constant-character,
-.token-constant-other-placeholder,
-.token-entity-name-variable,
-.token-entity-other-attribute-name,
-.token-meta-definition-variable-name,
-.token-meta-object-literal-key,
-.token-meta-structure-dictionary-key-python,
-.token-support-variable,
-.token-variable {
-    color: var(--color-variable);
-}
-
-/* function */
-.token-constant-character-escape,
-.token-entity-name-function,
-.token-entity-name-operator-custom-literal,
-.token-source-powershell-variable-other-member,
-.token-support-constant-handlebars,
-.token-support-function {
-    color: var(--color-function);
-}
-
 /* keyword */
 .token-entity-name-operator,
 .token-keyword-control,
@@ -88,25 +53,6 @@ export const token=`/* comment */
 .token-keyword-other-using,
 .token-source-cpp-keyword-operator-new {
     color: var(--color-keyword);
-}
-
-/* modifier */
-.token-constant-language,
-.token-entity-name-section,
-.token-entity-name-tag,
-.token-keyword-operator-alignas
-.token-keyword-operator-alignof,
-.token-keyword-operator-cast,
-.token-keyword-operator-expression,
-.token-keyword-operator-instanceof,
-.token-keyword-operator-logical-python,
-.token-keyword-operator-new,
-.token-keyword-operator-sizeof,
-.token-keyword-operator-typeid,
-.token-keyword-operator-wordlike,
-.token-storage,
-.token-variable-language {
-    color: var(--color-modifier);
 }
 
 /* class & type */
@@ -118,15 +64,99 @@ export const token=`/* comment */
 .token-meta-return-type,
 .token-meta-type-cast-expr,
 .token-meta-type-new-expr,
+.token-support-constant-dom,
+.token-support-constant-json,
+.token-support-constant-math,
 .token-support-class,
 .token-support-type {
     color: var(--color-class);
 }
 
+/* variable & key */
+.token-constant-character,
+.token-constant-other-placeholder,
+.token-entity-name-type-attribute-name,
+.token-entity-name-variable,
+.token-entity-other-attribute-name,
+.token-meta-definition-variable-name,
+.token-meta-object-literal-key,
+.token-meta-structure-dictionary-key-python,
+.token-support-function-git-rebase,
+.token-support-type-property-name,
+.token-support-type-vendored-property-name,
+.token-support-variable,
+.token-variable {
+    color: var(--color-variable);
+}
+
+/* modifier */
+.token-constant-language,
+.token-entity-name-function-preprocessor,
+.token-entity-name-section,
+.token-entity-name-tag,
+.token-keyword-operator-alignas,
+.token-keyword-operator-alignof,
+.token-keyword-operator-cast,
+.token-keyword-operator-expression,
+.token-keyword-operator-instanceof,
+.token-keyword-operator-logical-python,
+.token-keyword-operator-new,
+.token-keyword-operator-noexcept,
+.token-keyword-operator-sizeof,
+.token-keyword-operator-typeid,
+.token-keyword-operator-wordlike,
+.token-markup-changed,
+.token-meta-diff-header,
+.token-meta-preprocessor,
+.token-punctuation-definition-list-begin-markdown,
+.token-punctuation-definition-template-expression-begin,
+.token-punctuation-definition-template-expression-end,
+.token-punctuation-section-embedded,
+.token-storage-modifier,
+.token-storage-type,
+.token-variable-language {
+    color: var(--color-modifier);
+}
+
+/* function */
+.token-constant-character-escape,
+.token-entity-name-function,
+.token-entity-name-operator-custom-literal,
+.token-entity-name-tag-css,
+.token-entity-other-attribute-name-class-css,
+.token-entity-other-attribute-name-class-mixin-css,
+.token-entity-other-attribute-name-id-css,
+.token-entity-other-attribute-name-parent-selector-css,
+.token-entity-other-attribute-name-pseudo-class-css,
+.token-entity-other-attribute-name-pseudo-element-css,
+.token-entity-other-attribute-name-scss,
+.token-source-css-less-entity-other-attribute-name-id,
+.token-source-powershell-variable-other-member,
+.token-support-constant-handlebars,
+.token-support-function {
+    color: var(--color-function);
+}
+
+/* number */
+.token-constant-numeric,
+.token-constant-sha-git-rebase,
+.token-keyword-operator-minus-exponent,
+.token-keyword-operator-plus-exponent,
+.token-keyword-other-unit,
+.token-markup-inserted,
+.token-meta-preprocessor-numeric,
+.token-variable-other-enummember {
+    color: var(--color-number);
+}
+
 /* string */
 .token-constant-other-color-rgb-value,
 .token-constant-other-rgb-value,
-.token-string,
+.token-markup-deleted,
+.token-markup-inline-raw,
+.token-meta-embedded-assembly,
+.token-meta-preprocessor-string,
+.token-string:not(.token-meta-template-expression),
 .token-support-constant-color,
 .token-support-constant-font-name,
 .token-support-constant-media,

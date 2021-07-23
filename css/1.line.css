@@ -1,8 +1,3 @@
-code>.line:empty::before,
-pre>.line:empty::before {
-    content: " ";
-}
-
 pre>.line {
     display: block;
     white-space: pre;

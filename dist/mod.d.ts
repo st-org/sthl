@@ -1,15 +1,7 @@
-export { all as css } from './lib/css';
 import * as vsctm from 'vscode-textmate';
-export interface LangInfo {
-    name: string;
-    alias?: string[];
-    rootScopeName: string;
-    syntaxSrc: string;
-    rootScopeNamesToInject?: string[];
-    scopeNameToEmbeddedLanguageName?: {
-        [key: string]: string | undefined;
-    };
-}
+import { LangInfo } from './lang';
+export * from './lang';
+export { all as css } from './lib/css';
 export declare class Highlighter {
     readonly rootScopeNameToInjectedRootScopeNames: {
         [key: string]: string[] | undefined;

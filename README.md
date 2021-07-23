@@ -8,18 +8,18 @@ const shell=new Shell('Test','',css)
         {
             name:'stdn',
             rootScopeName:'source.stdn',
-            syntaxSrc:'https://cdn.jsdelivr.net/gh/st-org/st-lang@0.0.29/syntaxes/stdn.tmLanguage.json'
+            syntaxSrc:'https://cdn.jsdelivr.net/gh/st-org/st-lang/syntaxes/stdn.tmLanguage.json'
         },
         {
             name:'markdown',
             alias:['md'],
             rootScopeName:'text.html.markdown',
-            syntaxSrc:'https://cdn.jsdelivr.net/gh/textmate/markdown.tmbundle/Syntaxes/Markdown.tmLanguage'
+            syntaxSrc:'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json'
         },
         {
             name:'markdown-injection',
             rootScopeName:'text.html.markdown.injection.stdn',
-            syntaxSrc:'https://cdn.jsdelivr.net/gh/st-org/st-lang@0.0.29/syntaxes/markdown.injection.json',
+            syntaxSrc:'https://cdn.jsdelivr.net/gh/st-org/st-lang/syntaxes/markdown.injection.json',
             rootScopeNamesToInject:[
                 'text.html.markdown'
             ],
@@ -28,11 +28,7 @@ const shell=new Shell('Test','',css)
             }
         }
     ])
-    const element=await highlighter.highlight(`# Test
-\`\`\`stdn
-    {level 1,label test,heading[test]}
-\`\`\`
-`,'md')
+    const element=await highlighter.highlight('# Test\n```stdn\n    {level 1,label test,heading[test]}\n```','md')
     shell.append(element)
 })()
 
