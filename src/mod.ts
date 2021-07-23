@@ -82,17 +82,17 @@ export class Highlighter{
             }
         }
     }
-    async highlight(text:string,languageName:string){
+    async highlight(text:string,languageName:string,forceBlock=false){
         const rootScopeName=this.languageNameToRootScopeName[languageName]
         if(rootScopeName===undefined){
-            return Highlighter.textToPlainCode(text)
+            return Highlighter.textToPlainCode(text,forceBlock)
         }
         const grammar=await this.registry.loadGrammar(rootScopeName)
         if(grammar===null){
-            return Highlighter.textToPlainCode(text)
+            return Highlighter.textToPlainCode(text,forceBlock)
         }
         const lines=text.split('\n')
-        const out=lines.length>1?new CommonEle('pre'):new CommonEle('code')
+        const out=(forceBlock||lines.length>1)?new CommonEle('pre'):new CommonEle('code')
         let ruleStack = vsctm.INITIAL
         for (const line of lines) {
             let contentStart=false
@@ -143,9 +143,9 @@ export class Highlighter{
         }
         return out.element
     }
-    static textToPlainCode(text:string){
+    static textToPlainCode(text:string,forceBlock=false){
         const lines=text.split('\n')
-        const out=lines.length>1?new CommonEle('pre'):new CommonEle('code')
+        const out=(forceBlock||lines.length>1)?new CommonEle('pre'):new CommonEle('code')
         for(const line of lines){
             const content=line.trimStart()
             const padding=line.slice(0,line.length-content.length)
