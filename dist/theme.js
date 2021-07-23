@@ -36,10 +36,10 @@ export function extractThemeFromVST(vst) {
     return out;
 }
 export async function extractThemeFromVSTURLs(urls, dir = '') {
-    const out = [];
     if (dir === '') {
         dir = location.href;
     }
+    const out = [];
     for (const urlStr of urls) {
         try {
             const url = new URL(urlStr, dir);
@@ -55,6 +55,26 @@ export async function extractThemeFromVSTURLs(urls, dir = '') {
                 out.push(...await extractThemeFromVSTURLs(vst.include, url.href));
             }
             out.push(...extractThemeFromVST(vst));
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    return out;
+}
+export async function extractThemeFromThemeURLs(urls, dir = '') {
+    if (dir === '') {
+        dir = location.href;
+    }
+    const out = [];
+    for (const urlStr of urls) {
+        try {
+            const url = new URL(urlStr, dir);
+            const res = await fetch(url.href);
+            if (!res.ok) {
+                continue;
+            }
+            out.push(...JSON.parse(await res.text()));
         }
         catch (err) {
             console.log(err);

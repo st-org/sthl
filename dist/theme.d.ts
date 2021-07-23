@@ -20,4 +20,5 @@ export interface VST {
 }
 export declare function extractThemeFromVST(vst: VST): Theme;
 export declare function extractThemeFromVSTURLs(urls: string[], dir?: string): Promise<Theme>;
+export declare function extractThemeFromThemeURLs(urls: string[], dir?: string): Promise<Theme>;
 export {};

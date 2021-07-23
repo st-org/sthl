@@ -1,4 +1,7 @@
-export function extractLangInfoArrayFromVSEC(vsec, dir) {
+export function extractLangInfoArrayFromVSEC(vsec, dir = '') {
+    if (dir === '') {
+        dir = location.href;
+    }
     const { contributes } = vsec;
     if (contributes === undefined) {
         return [];
@@ -28,10 +31,10 @@ export function extractLangInfoArrayFromVSEC(vsec, dir) {
     return out;
 }
 export async function extractLangInfoArrayFromVSECURLs(urls, dir = '') {
-    const out = [];
     if (dir === '') {
         dir = location.href;
     }
+    const out = [];
     for (const urlStr of urls) {
         try {
             const url = new URL(urlStr, dir);
@@ -48,6 +51,32 @@ export async function extractLangInfoArrayFromVSECURLs(urls, dir = '') {
                 continue;
             }
             out.push(...extractLangInfoArrayFromVSEC(JSON.parse(await res.text()), url.href));
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    return out;
+}
+export async function extractLangInfoArrayFromLangsURLs(urls, dir = '') {
+    if (dir === '') {
+        dir = location.href;
+    }
+    const out = [];
+    for (const urlStr of urls) {
+        try {
+            const url = new URL(urlStr, dir);
+            const res = await fetch(url.href);
+            if (!res.ok) {
+                continue;
+            }
+            const array = JSON.parse(await res.text());
+            for (const info of array) {
+                if (info.syntaxSrc !== undefined) {
+                    info.syntaxSrc = new URL(info.syntaxSrc, url).href;
+                }
+            }
+            out.push(...array);
         }
         catch (err) {
             console.log(err);
