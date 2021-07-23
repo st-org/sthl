@@ -2,6 +2,18 @@ import {Highlighter,css,extractLangInfoArrayFromVSECURLs,extractThemeFromVSTURLs
 const style=document.createElement('style')
 style.textContent=css
 document.body.append(style)
+const example=[
+    '# Test',
+    '```ts',
+    'class Text{',
+    '    constructor(array?:string[]){',
+    '        for(const item of array??[]){',
+    '            console.log(item)',
+    '        }',
+    '    }',
+    '}',
+    '```'
+].join('\n')
 const js=`const fs=require('fs')
 const path=require('path')
 const names=[]
@@ -124,7 +136,7 @@ export async function extractLangInfoArrayFromLangsURLs(urls:string[],dir=''){
     }
     return out
 }`
-const cssCase=`.warn::before {
+const cssExample=`.warn::before {
     content: "Error";
     color: green;
 }
@@ -158,7 +170,15 @@ pre>.line>.content>*::after {
 const html=`<!DOCTYPE html>
 <html data-color-scheme="dark">
     <body>
+        <style>
+            a{
+                color:red
+            }
+        </style>
         <script src="./main.js"></script>
+        <script>
+            console.log(0)
+        </script>
     </body>
 </html>`
 const md='# Test\n```stdn\n    {level 1,label test,heading[test]}\n    {level 1,label test2,heading[test]}\n```\n'
@@ -167,12 +187,11 @@ const stdn='{label test,ref[]}'
     const langInfoArray=await extractLangInfoArrayFromVSECURLs([
         'css',
         'html',
-        'javascript',
         'markdown-basics',
-        'typescript-basics',
     ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/')
     langInfoArray.push(...await extractLangInfoArrayFromVSECURLs([
-        'https://cdn.jsdelivr.net/gh/st-org/st-lang'
+        'https://cdn.jsdelivr.net/gh/st-org/st-lang',
+        'https://cdn.jsdelivr.net/gh/microsoft/vscode-typescript-next',
     ]))
     langInfoArray.push({
         name:'javascript',
@@ -190,10 +209,11 @@ const stdn='{label test,ref[]}'
     document.body.style.background='#1E1E1E'
     document.body.style.color='#D4D4D4'
     const highlighter=new Highlighter(langInfoArray,theme)
+    document.body.append(await highlighter.highlight(example,'md'))
     document.body.append(await highlighter.highlight(js,'js'))
     document.body.append(await highlighter.highlight(js,'non'))
     document.body.append(await highlighter.highlight(ts,'ts'))
-    document.body.append(await highlighter.highlight(cssCase,'css'))
+    document.body.append(await highlighter.highlight(cssExample,'css'))
     document.body.append(await highlighter.highlight(html,'html'))
     document.body.append(await highlighter.highlight(md,'md'))
     document.body.append(await highlighter.highlight(stdn,'stdn'))

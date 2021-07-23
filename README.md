@@ -4,17 +4,31 @@ import {Highlighter,css,extractLangInfoArrayFromVSECURLs,extractThemeFromVSTURLs
 const style=document.createElement('style')
 style.textContent=css
 document.body.append(style)
-const case='# Test\n```stdn\n    {level 1,label test,heading[test]}\n```'
+const example=[
+    '# Test',
+    '```ts',
+    'class Text{',
+    '    constructor(array?:string[]){',
+    '        for(const item of array??[]){',
+    '            console.log(item)',
+    '        }',
+    '    }',
+    '}',
+    '```'
+].join('\n')
 ;(async()=>{
     const langInfoArray=await extractLangInfoArrayFromVSECURLs([
         'markdown-basics',
     ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/')
     langInfoArray.push(...await extractLangInfoArrayFromVSECURLs([
-        'https://cdn.jsdelivr.net/gh/st-org/st-lang'
+        'https://cdn.jsdelivr.net/gh/microsoft/vscode-typescript-next'
     ]))
     langInfoArray.push({
         name:'markdown',
         alias:['md']
+    },{
+        name:'typescript',
+        alias:['ts']
     })
     const theme=await extractThemeFromVSTURLs([
         'dark_plus.json'
@@ -22,7 +36,7 @@ const case='# Test\n```stdn\n    {level 1,label test,heading[test]}\n```'
     document.body.style.background='#1E1E1E'
     document.body.style.color='#D4D4D4'
     const highlighter=new Highlighter(langInfoArray,theme)
-    document.body.append(await highlighter.highlight(case,'md'))
+    document.body.append(await highlighter.highlight(example,'md'))
 })()
 
 // Of course, to run the above codes in browser, you need a bundler like webpack.
