@@ -146,6 +146,9 @@ export class Highlighter{
                 tokenSpan.setHTML(tokenSpan.element.innerHTML.replace(/([^<]\/+|[(){}\[\]])/g,'$1<wbr>'))
                 for(const scope of token.scopes){
                     const array=scope.split('.')
+                    .map(val=>val.replace(/\s/g,'-'))
+                    const five='token-'+array.slice(0,5).join('-')
+                    const four='token-'+array.slice(0,4).join('-')
                     const three='token-'+array.slice(0,3).join('-')
                     const two='token-'+array.slice(0,2).join('-')
                     const one='token-'+array[0]
@@ -153,6 +156,8 @@ export class Highlighter{
                         tokenSpan.classList.add(one)
                         tokenSpan.classList.add(two)
                         tokenSpan.classList.add(three)
+                        tokenSpan.classList.add(four)
+                        tokenSpan.classList.add(five)
                     }catch(err){
                         console.log(err)
                     }
