@@ -1,35 +1,28 @@
 # STHL
 ```js
-import {Shell} from '@ddu6/stui'
-import {Highlighter,css} from 'sthl'
-const shell=new Shell('Test','',css)
+import {Highlighter,css,extractLangInfoArrayFromVSECURLs,extractThemeFromVSTURLs} from 'sthl'
+const style=document.createElement('style')
+style.textContent=css
+document.body.append(style)
+const case='# Test\n```stdn\n    {level 1,label test,heading[test]}\n```'
 ;(async()=>{
-    const highlighter=new Highlighter([
-        {
-            name:'stdn',
-            rootScopeName:'source.stdn',
-            syntaxSrc:'https://cdn.jsdelivr.net/gh/st-org/st-lang/syntaxes/stdn.tmLanguage.json'
-        },
-        {
-            name:'markdown',
-            alias:['md'],
-            rootScopeName:'text.html.markdown',
-            syntaxSrc:'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json'
-        },
-        {
-            name:'markdown-injection',
-            rootScopeName:'text.html.markdown.injection.stdn',
-            syntaxSrc:'https://cdn.jsdelivr.net/gh/st-org/st-lang/syntaxes/markdown.injection.json',
-            rootScopeNamesToInject:[
-                'text.html.markdown'
-            ],
-            scopeNameToEmbeddedLanguageName:{
-                'meta.embedded.block.stdn':'stdn'
-            }
-        }
-    ])
-    const element=await highlighter.highlight('# Test\n```stdn\n    {level 1,label test,heading[test]}\n```','md')
-    shell.append(element)
+    const langInfoArray=await extractLangInfoArrayFromVSECURLs([
+        'markdown-basics',
+    ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/')
+    langInfoArray.push(...await extractLangInfoArrayFromVSECURLs([
+        'https://cdn.jsdelivr.net/gh/st-org/st-lang'
+    ]))
+    langInfoArray.push({
+        name:'markdown',
+        alias:['md']
+    })
+    const theme=await extractThemeFromVSTURLs([
+        'dark_plus.json'
+    ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/theme-defaults/themes/')
+    document.body.style.background='#1E1E1E'
+    document.body.style.color='#D4D4D4'
+    const highlighter=new Highlighter(langInfoArray,theme)
+    document.body.append(await highlighter.highlight(case,'md'))
 })()
 
 // Of course, to run the above codes in browser, you need a bundler like webpack.

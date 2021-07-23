@@ -2,6 +2,7 @@ import * as vsctm from 'vscode-textmate';
 import * as oniguruma from 'vscode-oniguruma';
 import { CommonEle, Span } from 'stce';
 export * from './lang';
+export * from './theme';
 export { all as css } from './lib/css';
 async function createOnigLib() {
     const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.5.1/release/onig.wasm')).blob()).arrayBuffer();
@@ -17,7 +18,8 @@ async function createOnigLib() {
     return onigLib;
 }
 export class Highlighter {
-    constructor(langInfoArray) {
+    constructor(langInfoArray, theme = []) {
+        this.theme = theme;
         this.rootScopeNameToInjectedRootScopeNames = {};
         this.languageNameToLanguageId = {};
         this.rootScopeNameToScopeNameToEmbeddedLanguageId = {};
@@ -133,24 +135,25 @@ export class Highlighter {
                     .setText(text);
                 tokenSpan.setHTML(tokenSpan.element.innerHTML.replace(/([^<]\/+|[(){}\[\]])/g, '$1<wbr>'));
                 for (const scope of token.scopes) {
-                    const array = scope.split('.')
-                        .map(val => val.replace(/\s/g, '-'));
-                    const six = 'token-' + array.slice(0, 6).join('-');
-                    const five = 'token-' + array.slice(0, 5).join('-');
-                    const four = 'token-' + array.slice(0, 4).join('-');
-                    const three = 'token-' + array.slice(0, 3).join('-');
-                    const two = 'token-' + array.slice(0, 2).join('-');
-                    const one = 'token-' + array[0];
-                    try {
-                        tokenSpan.classList.add(one);
-                        tokenSpan.classList.add(two);
-                        tokenSpan.classList.add(three);
-                        tokenSpan.classList.add(four);
-                        tokenSpan.classList.add(five);
-                        tokenSpan.classList.add(six);
-                    }
-                    catch (err) {
-                        console.log(err);
+                    let usedScope = '';
+                    for (const { scopeNames, style } of this.theme) {
+                        const matchScope = scopeNames.find(val => scope.startsWith(val));
+                        if (matchScope === undefined || matchScope.length < usedScope.length) {
+                            continue;
+                        }
+                        usedScope = matchScope;
+                        if (style.color !== undefined) {
+                            tokenSpan.style.color = style.color;
+                        }
+                        if (style.fontStyle !== undefined) {
+                            tokenSpan.style.fontStyle = style.fontStyle;
+                        }
+                        if (style.fontWeight !== undefined) {
+                            tokenSpan.style.fontWeight = style.fontWeight;
+                        }
+                        if (style.textDecoration !== undefined) {
+                            tokenSpan.style.textDecoration = style.textDecoration;
+                        }
                     }
                 }
                 if (contentStart) {

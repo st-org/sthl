@@ -1,7 +1,6 @@
 pre>.line {
     display: block;
     white-space: pre;
-    font-size: var(--length-font-span);
 }
 
 pre>.line>.content {
