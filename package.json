@@ -1,6 +1,6 @@
 {
   "name": "sthl",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Simple Text Syntax Highlighter",
   "main": "dist/mod.js",
   "scripts": {
