@@ -9,7 +9,7 @@ export type Theme={
     scopeNames:string[]
     style:Style
 }[]
-export interface VST{
+export interface VSCT{
     include?:string[]|string
     tokenColors?:{
         scope:string[]|string
@@ -19,8 +19,8 @@ export interface VST{
         }
     }[]
 }
-export function extractThemeFromVST(vst:VST){
-    const {tokenColors}=vst
+export function extractThemeFromVSCT(vsct:VSCT){
+    const {tokenColors}=vsct
     if(tokenColors===undefined){
         return []
     }
@@ -53,7 +53,7 @@ export function extractThemeFromVST(vst:VST){
     }
     return out
 }
-export async function extractThemeFromVSTURLs(urls:string[],dir=''){
+export async function extractThemeFromVSCTURLs(urls:string[],dir=''){
     if(dir===''){
         dir=location.href
     }
@@ -65,14 +65,14 @@ export async function extractThemeFromVSTURLs(urls:string[],dir=''){
             if(!res.ok){
                 continue
             }
-            const vst:VST=parse(await res.text())
-            if(typeof vst.include==='string'){
-                vst.include=[vst.include]
+            const vsct:VSCT=parse(await res.text())
+            if(typeof vsct.include==='string'){
+                vsct.include=[vsct.include]
             }
-            if(vst.include!==undefined){
-                out.push(...await extractThemeFromVSTURLs(vst.include,url.href))
+            if(vsct.include!==undefined){
+                out.push(...await extractThemeFromVSCTURLs(vsct.include,url.href))
             }
-            out.push(...extractThemeFromVST(vst))
+            out.push(...extractThemeFromVSCT(vsct))
         }catch(err){
             console.log(err)
         }

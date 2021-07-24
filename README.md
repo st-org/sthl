@@ -1,6 +1,6 @@
 # STHL
 ```js
-import {Highlighter,css,extractLangInfoArrayFromVSECURLs,extractThemeFromVSTURLs} from 'sthl'
+import {Highlighter,css,extractLangInfoArrayFromVSCEURLs,extractThemeFromVSCTURLs} from 'sthl'
 const style=document.createElement('style')
 style.textContent=css
 document.body.append(style)
@@ -17,10 +17,10 @@ const example=[
     '```'
 ].join('\n')
 ;(async()=>{
-    const langInfoArray=await extractLangInfoArrayFromVSECURLs([
+    const langInfoArray=await extractLangInfoArrayFromVSCEURLs([
         'markdown-basics',
     ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/')
-    langInfoArray.push(...await extractLangInfoArrayFromVSECURLs([
+    langInfoArray.push(...await extractLangInfoArrayFromVSCEURLs([
         'https://cdn.jsdelivr.net/gh/microsoft/vscode-typescript-next'
     ]))
     langInfoArray.push({
@@ -30,7 +30,7 @@ const example=[
         name:'typescript',
         alias:['ts']
     })
-    const theme=await extractThemeFromVSTURLs([
+    const theme=await extractThemeFromVSCTURLs([
         'dark_plus.json'
     ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/theme-defaults/themes/')
     document.body.style.background='#1E1E1E'

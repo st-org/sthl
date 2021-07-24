@@ -1,9 +1,9 @@
 import { parse } from 'json5';
-export function extractLangInfoArrayFromVSEC(vsec, dir = '') {
+export function extractLangInfoArrayFromVSCE(vsce, dir = '') {
     if (dir === '') {
         dir = location.href;
     }
-    const { contributes } = vsec;
+    const { contributes } = vsce;
     if (contributes === undefined) {
         return [];
     }
@@ -30,7 +30,7 @@ export function extractLangInfoArrayFromVSEC(vsec, dir = '') {
     }
     return out;
 }
-export async function extractLangInfoArrayFromVSECURLs(urls, dir = '') {
+export async function extractLangInfoArrayFromVSCEURLs(urls, dir = '') {
     if (dir === '') {
         dir = location.href;
     }
@@ -50,7 +50,7 @@ export async function extractLangInfoArrayFromVSECURLs(urls, dir = '') {
             if (!res.ok) {
                 continue;
             }
-            out.push(...extractLangInfoArrayFromVSEC(parse(await res.text()), url.href));
+            out.push(...extractLangInfoArrayFromVSCE(parse(await res.text()), url.href));
         }
         catch (err) {
             console.log(err);

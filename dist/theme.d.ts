@@ -8,7 +8,7 @@ export declare type Theme = {
     scopeNames: string[];
     style: Style;
 }[];
-export interface VST {
+export interface VSCT {
     include?: string[] | string;
     tokenColors?: {
         scope: string[] | string;
@@ -18,7 +18,7 @@ export interface VST {
         };
     }[];
 }
-export declare function extractThemeFromVST(vst: VST): Theme;
-export declare function extractThemeFromVSTURLs(urls: string[], dir?: string): Promise<Theme>;
+export declare function extractThemeFromVSCT(vsct: VSCT): Theme;
+export declare function extractThemeFromVSCTURLs(urls: string[], dir?: string): Promise<Theme>;
 export declare function extractThemeFromThemeURLs(urls: string[], dir?: string): Promise<Theme>;
 export {};

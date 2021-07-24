@@ -1,6 +1,6 @@
 import { parse } from 'json5';
-export function extractThemeFromVST(vst) {
-    const { tokenColors } = vst;
+export function extractThemeFromVSCT(vsct) {
+    const { tokenColors } = vsct;
     if (tokenColors === undefined) {
         return [];
     }
@@ -36,7 +36,7 @@ export function extractThemeFromVST(vst) {
     }
     return out;
 }
-export async function extractThemeFromVSTURLs(urls, dir = '') {
+export async function extractThemeFromVSCTURLs(urls, dir = '') {
     if (dir === '') {
         dir = location.href;
     }
@@ -48,14 +48,14 @@ export async function extractThemeFromVSTURLs(urls, dir = '') {
             if (!res.ok) {
                 continue;
             }
-            const vst = parse(await res.text());
-            if (typeof vst.include === 'string') {
-                vst.include = [vst.include];
+            const vsct = parse(await res.text());
+            if (typeof vsct.include === 'string') {
+                vsct.include = [vsct.include];
             }
-            if (vst.include !== undefined) {
-                out.push(...await extractThemeFromVSTURLs(vst.include, url.href));
+            if (vsct.include !== undefined) {
+                out.push(...await extractThemeFromVSCTURLs(vsct.include, url.href));
             }
-            out.push(...extractThemeFromVST(vst));
+            out.push(...extractThemeFromVSCT(vsct));
         }
         catch (err) {
             console.log(err);

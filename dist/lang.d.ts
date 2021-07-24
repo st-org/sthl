@@ -5,7 +5,7 @@ export interface LangInfo {
     syntaxSrc?: string;
     scopeNamesToInject?: string[];
 }
-export interface VSEC {
+export interface VSCE {
     contributes?: {
         grammars?: {
             language?: string;
@@ -15,6 +15,6 @@ export interface VSEC {
         }[];
     };
 }
-export declare function extractLangInfoArrayFromVSEC(vsec: VSEC, dir?: string): LangInfo[];
-export declare function extractLangInfoArrayFromVSECURLs(urls: string[], dir?: string): Promise<LangInfo[]>;
+export declare function extractLangInfoArrayFromVSCE(vsce: VSCE, dir?: string): LangInfo[];
+export declare function extractLangInfoArrayFromVSCEURLs(urls: string[], dir?: string): Promise<LangInfo[]>;
 export declare function extractLangInfoArrayFromLangsURLs(urls: string[], dir?: string): Promise<LangInfo[]>;

@@ -6,7 +6,7 @@ export interface LangInfo{
     syntaxSrc?:string
     scopeNamesToInject?:string[]
 }
-export interface VSEC{
+export interface VSCE{
     contributes?:{
         grammars?:{
             language?:string
@@ -16,11 +16,11 @@ export interface VSEC{
         }[]
     }
 }
-export function extractLangInfoArrayFromVSEC(vsec:VSEC,dir=''){
+export function extractLangInfoArrayFromVSCE(vsce:VSCE,dir=''){
     if(dir===''){
         dir=location.href
     }
-    const {contributes}=vsec
+    const {contributes}=vsce
     if(contributes===undefined){
         return []
     }
@@ -46,7 +46,7 @@ export function extractLangInfoArrayFromVSEC(vsec:VSEC,dir=''){
     }
     return out
 }
-export async function extractLangInfoArrayFromVSECURLs(urls:string[],dir=''){
+export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir=''){
     if(dir===''){
         dir=location.href
     }
@@ -65,7 +65,7 @@ export async function extractLangInfoArrayFromVSECURLs(urls:string[],dir=''){
             if(!res.ok){
                 continue
             }
-            out.push(...extractLangInfoArrayFromVSEC(parse(await res.text()),url.href))
+            out.push(...extractLangInfoArrayFromVSCE(parse(await res.text()),url.href))
         }catch(err){
             console.log(err)
         }

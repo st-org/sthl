@@ -1,4 +1,4 @@
-import {Highlighter,css,extractLangInfoArrayFromVSECURLs,extractThemeFromVSTURLs} from '../dist/mod'
+import {Highlighter,css,extractLangInfoArrayFromVSCEURLs,extractThemeFromVSCTURLs} from '../dist/mod'
 const style=document.createElement('style')
 style.textContent=css
 document.body.append(style)
@@ -45,7 +45,7 @@ export interface LangInfo{
     syntaxSrc?:string
     scopeNamesToInject?:string[]
 }
-export interface VSEC{
+export interface VSCE{
     contributes?:{
         grammars?:{
             language?:string
@@ -55,11 +55,11 @@ export interface VSEC{
         }[]
     }
 }
-export function extractLangInfoArrayFromVSEC(vsec:VSEC,dir=''){
+export function extractLangInfoArrayFromVSCE(vsce:VSCE,dir=''){
     if(dir===''){
         dir=location.href
     }
-    const {contributes}=vsec
+    const {contributes}=vsce
     if(contributes===undefined){
         return []
     }
@@ -85,7 +85,7 @@ export function extractLangInfoArrayFromVSEC(vsec:VSEC,dir=''){
     }
     return out
 }
-export async function extractLangInfoArrayFromVSECURLs(urls:string[],dir=''){
+export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir=''){
     if(dir===''){
         dir=location.href
     }
@@ -104,7 +104,7 @@ export async function extractLangInfoArrayFromVSECURLs(urls:string[],dir=''){
             if(!res.ok){
                 continue
             }
-            out.push(...extractLangInfoArrayFromVSEC(parse(await res.text()),url.href))
+            out.push(...extractLangInfoArrayFromVSCE(parse(await res.text()),url.href))
         }catch(err){
             console.log(err)
         }
@@ -184,12 +184,12 @@ const html=`<!DOCTYPE html>
 const md='# Test\n```stdn\n    {level 1,label test,heading[test]}\n    {level 1,label test2,heading[test]}\n```\n'
 const stdn='{label test,ref[]}'
 ;(async()=>{
-    const langInfoArray=await extractLangInfoArrayFromVSECURLs([
+    const langInfoArray=await extractLangInfoArrayFromVSCEURLs([
         'css',
         'html',
         'markdown-basics',
     ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/')
-    langInfoArray.push(...await extractLangInfoArrayFromVSECURLs([
+    langInfoArray.push(...await extractLangInfoArrayFromVSCEURLs([
         'https://cdn.jsdelivr.net/gh/st-org/st-lang',
         'https://cdn.jsdelivr.net/gh/microsoft/vscode-typescript-next',
     ]))
@@ -203,7 +203,7 @@ const stdn='{label test,ref[]}'
         name:'typescript',
         alias:['ts']
     })
-    const theme=await extractThemeFromVSTURLs([
+    const theme=await extractThemeFromVSCTURLs([
         'dark_plus.json'
     ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/theme-defaults/themes/')
     document.body.style.background='#1E1E1E'
