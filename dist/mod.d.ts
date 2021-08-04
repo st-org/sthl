@@ -1,4 +1,5 @@
 import * as vsctm from 'vscode-textmate';
+import { CommonEle } from 'stce';
 import { LangInfo } from './lang';
 import { Theme } from './theme';
 export * from './lang';
@@ -17,6 +18,8 @@ export declare class Highlighter {
     };
     readonly registry: vsctm.Registry;
     constructor(langInfoArray: LangInfo[], theme?: Theme);
-    highlight(text: string, languageName: string, forceBlock?: boolean): Promise<HTMLElement | HTMLPreElement>;
-    static textToPlainCode(text: string, forceBlock?: boolean): HTMLElement | HTMLPreElement;
+    highlightToDocumentFragment(text: string, languageName: string): Promise<DocumentFragment>;
+    highlightToElement(text: string, languageName: string, forceBlock?: boolean): Promise<HTMLElement | CommonEle<"pre">>;
+    static textToPlainDocumentFragment(text: string): DocumentFragment;
+    static textToPlainElement(text: string, forceBlock?: boolean): HTMLElement | CommonEle<"pre">;
 }

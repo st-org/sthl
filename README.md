@@ -36,7 +36,7 @@ const example=[
     document.body.style.background='#1E1E1E'
     document.body.style.color='#D4D4D4'
     const highlighter=new Highlighter(langInfoArray,theme)
-    document.body.append(await highlighter.highlight(example,'md'))
+    document.body.append(await highlighter.highlightToElement(example,'md'))
 })()
 
 // Of course, to run the above codes in browser, you need a bundler like webpack.

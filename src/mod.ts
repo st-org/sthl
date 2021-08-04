@@ -82,17 +82,17 @@ export class Highlighter{
             }
         }
     }
-    async highlight(text:string,languageName:string,forceBlock=false){
+    async highlightToDocumentFragment(text:string,languageName:string){
         const rootScopeName=this.languageNameToRootScopeName[languageName]
         if(rootScopeName===undefined){
-            return Highlighter.textToPlainCode(text,forceBlock)
+            return Highlighter.textToPlainDocumentFragment(text)
         }
         const grammar=await this.registry.loadGrammar(rootScopeName)
         if(grammar===null){
-            return Highlighter.textToPlainCode(text,forceBlock)
+            return Highlighter.textToPlainDocumentFragment(text)
         }
         const lines=text.split('\n')
-        const out=(forceBlock||lines.length>1)?new CommonEle('pre'):new CommonEle('code')
+        const out=new DocumentFragment()
         let ruleStack = vsctm.INITIAL
         for (const line of lines) {
             let contentStart=false
@@ -139,13 +139,19 @@ export class Highlighter{
             out.append(
                 lineSpan
                 .append(contentSpan)
+                .element
             )
         }
-        return out.element
+        return out
     }
-    static textToPlainCode(text:string,forceBlock=false){
+    async highlightToElement(text:string,languageName:string,forceBlock=false){
+        return forceBlock||text.includes('\n')?new CommonEle('pre'):new CommonEle('code')
+        .append(await this.highlightToDocumentFragment(text,languageName))
+        .element
+    }
+    static textToPlainDocumentFragment(text:string){
         const lines=text.split('\n')
-        const out=(forceBlock||lines.length>1)?new CommonEle('pre'):new CommonEle('code')
+        const out=new DocumentFragment()
         for(const line of lines){
             const content=line.trimStart()
             const padding=line.slice(0,line.length-content.length)
@@ -159,8 +165,14 @@ export class Highlighter{
                 new Span(['line'])
                 .setText(padding)
                 .append(contentSpan)
+                .element
             )
         }
-        return out.element
+        return out
+    }
+    static textToPlainElement(text:string,forceBlock=false){
+        return forceBlock||text.includes('\n')?new CommonEle('pre'):new CommonEle('code')
+        .append(Highlighter.textToPlainDocumentFragment(text))
+        .element
     }
 }

@@ -76,17 +76,17 @@ export class Highlighter {
             }
         }
     }
-    async highlight(text, languageName, forceBlock = false) {
+    async highlightToDocumentFragment(text, languageName) {
         const rootScopeName = this.languageNameToRootScopeName[languageName];
         if (rootScopeName === undefined) {
-            return Highlighter.textToPlainCode(text, forceBlock);
+            return Highlighter.textToPlainDocumentFragment(text);
         }
         const grammar = await this.registry.loadGrammar(rootScopeName);
         if (grammar === null) {
-            return Highlighter.textToPlainCode(text, forceBlock);
+            return Highlighter.textToPlainDocumentFragment(text);
         }
         const lines = text.split('\n');
-        const out = (forceBlock || lines.length > 1) ? new CommonEle('pre') : new CommonEle('code');
+        const out = new DocumentFragment();
         let ruleStack = vsctm.INITIAL;
         for (const line of lines) {
             let contentStart = false;
@@ -132,13 +132,19 @@ export class Highlighter {
             }
             ruleStack = lineTokens.ruleStack;
             out.append(lineSpan
-                .append(contentSpan));
+                .append(contentSpan)
+                .element);
         }
-        return out.element;
+        return out;
     }
-    static textToPlainCode(text, forceBlock = false) {
+    async highlightToElement(text, languageName, forceBlock = false) {
+        return forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code')
+            .append(await this.highlightToDocumentFragment(text, languageName))
+            .element;
+    }
+    static textToPlainDocumentFragment(text) {
         const lines = text.split('\n');
-        const out = (forceBlock || lines.length > 1) ? new CommonEle('pre') : new CommonEle('code');
+        const out = new DocumentFragment();
         for (const line of lines) {
             const content = line.trimStart();
             const padding = line.slice(0, line.length - content.length);
@@ -148,8 +154,14 @@ export class Highlighter {
                 .replace(/([^<]\/+|[(){}\[\]])/g, '$1<wbr>'));
             out.append(new Span(['line'])
                 .setText(padding)
-                .append(contentSpan));
+                .append(contentSpan)
+                .element);
         }
-        return out.element;
+        return out;
+    }
+    static textToPlainElement(text, forceBlock = false) {
+        return forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code')
+            .append(Highlighter.textToPlainDocumentFragment(text))
+            .element;
     }
 }
