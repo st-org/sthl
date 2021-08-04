@@ -18,6 +18,15 @@ async function createOnigLib() {
     };
     return onigLib;
 }
+function textToHTML(text) {
+    const lookup = {
+        '&': "&amp;",
+        '"': "&quot;",
+        '<': "&lt;",
+        '>': "&gt;"
+    };
+    return text.replace(/[&"<>]/g, c => lookup[c]);
+}
 export class Highlighter {
     constructor(langInfoArray, theme = []) {
         this.theme = theme;
@@ -99,8 +108,8 @@ export class Highlighter {
                     contentStart = true;
                 }
                 const tokenSpan = new Span()
-                    .setText(text);
-                tokenSpan.setHTML(tokenSpan.element.innerHTML.replace(/([^<]\/+|[(){}\[\]])/g, '$1<wbr>'));
+                    .setHTML(textToHTML(text)
+                    .replace(/(\/+|[(){}\[\]])/g, '$1<wbr>'));
                 for (const scope of token.scopes) {
                     let usedScope = '';
                     for (const { scopeNames, style } of this.theme) {
@@ -147,14 +156,11 @@ export class Highlighter {
         const out = new DocumentFragment();
         for (const line of lines) {
             const content = line.trimStart();
-            const padding = line.slice(0, line.length - content.length);
-            const contentSpan = new Span(['content'])
-                .setText(content);
-            contentSpan.setHTML(contentSpan.element.innerHTML
-                .replace(/([^<]\/+|[(){}\[\]])/g, '$1<wbr>'));
             out.append(new Span(['line'])
-                .setText(padding)
-                .append(contentSpan)
+                .setText(line.slice(0, line.length - content.length))
+                .append(new Span(['content'])
+                .setHTML(textToHTML(content)
+                .replace(/(\/+|[(){}\[\]])/g, '$1<wbr>')))
                 .element);
         }
         return out;
