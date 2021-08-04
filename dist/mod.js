@@ -138,7 +138,7 @@ export class Highlighter {
         return out;
     }
     async highlightToElement(text, languageName, forceBlock = false) {
-        return forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code')
+        return (forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code'))
             .append(await this.highlightToDocumentFragment(text, languageName))
             .element;
     }
@@ -160,7 +160,7 @@ export class Highlighter {
         return out;
     }
     static textToPlainElement(text, forceBlock = false) {
-        return forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code')
+        return (forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code'))
             .append(Highlighter.textToPlainDocumentFragment(text))
             .element;
     }
