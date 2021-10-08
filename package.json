@@ -4,8 +4,7 @@
   "description": "Simple Text Syntax Highlighter",
   "main": "dist/mod.js",
   "scripts": {
-    "pkg": "node scripts/pkg-css.js",
-    "build": "npm run pkg && tsc && webpack"
+    "build": "pkg && tsc && webpack"
   },
   "repository": {
     "type": "git",
@@ -18,20 +17,21 @@
   },
   "homepage": "https://github.com/st-org/sthl#readme",
   "devDependencies": {
-    "@types/node": "^16.4.1",
-    "ts-loader": "^9.2.3",
-    "typescript": "^4.3.5",
-    "webpack": "^5.46.0",
-    "webpack-cli": "^4.7.2"
+    "@ddu6/pkg-tools": "^0.0.6",
+    "@types/node": "^16.10.3",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.3",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
   },
   "dependencies": {
     "json5": "^2.2.0",
-    "stce": "^0.0.5",
+    "stce": "^0.0.7",
     "vscode-oniguruma": "^1.5.1",
     "vscode-textmate": "^5.4.0"
   },
   "engines": {
-    "node": "^14.0.0",
-    "npm": "^7.0.0"
+    "node": ">=14.0.0",
+    "npm": ">=8.0.0"
   }
 }

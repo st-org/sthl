@@ -37,7 +37,7 @@ export function extractThemeFromVSCT(vsct) {
     return out;
 }
 export async function extractThemeFromVSCTURLs(urls, dir = '') {
-    if (dir === '') {
+    if (dir.length === 0) {
         dir = location.href;
     }
     const out = [];
@@ -64,7 +64,7 @@ export async function extractThemeFromVSCTURLs(urls, dir = '') {
     return out;
 }
 export async function extractThemeFromThemeURLs(urls, dir = '') {
-    if (dir === '') {
+    if (dir.length === 0) {
         dir = location.href;
     }
     const out = [];

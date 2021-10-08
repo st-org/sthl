@@ -1,6 +1,6 @@
 import { parse } from 'json5';
 export function extractLangInfoArrayFromVSCE(vsce, dir = '') {
-    if (dir === '') {
+    if (dir.length === 0) {
         dir = location.href;
     }
     const { contributes } = vsce;
@@ -31,7 +31,7 @@ export function extractLangInfoArrayFromVSCE(vsce, dir = '') {
     return out;
 }
 export async function extractLangInfoArrayFromVSCEURLs(urls, dir = '') {
-    if (dir === '') {
+    if (dir.length === 0) {
         dir = location.href;
     }
     const out = [];
@@ -59,7 +59,7 @@ export async function extractLangInfoArrayFromVSCEURLs(urls, dir = '') {
     return out;
 }
 export async function extractLangInfoArrayFromLangsURLs(urls, dir = '') {
-    if (dir === '') {
+    if (dir.length === 0) {
         dir = location.href;
     }
     const out = [];

@@ -62,8 +62,7 @@ export class Highlighter{
         }
     })
     constructor(langInfoArray:LangInfo[],readonly theme:Theme=[]){
-        for(let i=0;i<langInfoArray.length;i++){
-            const {name,alias,scopeName,syntaxSrc}=langInfoArray[i]
+        for(const {name,alias,scopeName,syntaxSrc} of langInfoArray){
             if(scopeName!==undefined&&syntaxSrc!==undefined){
                 this.scopeNameToSyntaxSrc[scopeName]=syntaxSrc
             }
@@ -110,7 +109,7 @@ export class Highlighter{
             const lineTokens = grammar.tokenizeLine(line, ruleStack)
             for (const token of lineTokens.tokens) {
                 const text=line.slice(token.startIndex,token.endIndex)
-                if(!contentStart&&text.trim()!==''){
+                if(!contentStart&&text.trim().length>0){
                     contentStart=true
                 }
                 const tokenSpan=new Span()

@@ -56,7 +56,7 @@ export interface VSCE{
     }
 }
 export function extractLangInfoArrayFromVSCE(vsce:VSCE,dir=''){
-    if(dir===''){
+    if(dir.length===0){
         dir=location.href
     }
     const {contributes}=vsce
@@ -86,7 +86,7 @@ export function extractLangInfoArrayFromVSCE(vsce:VSCE,dir=''){
     return out
 }
 export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir=''){
-    if(dir===''){
+    if(dir.length===0){
         dir=location.href
     }
     const out:LangInfo[]=[]
@@ -112,7 +112,7 @@ export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir=''){
     return out
 }
 export async function extractLangInfoArrayFromLangsURLs(urls:string[],dir=''){
-    if(dir===''){
+    if(dir.length===0){
         dir=location.href
     }
     const out:LangInfo[]=[]

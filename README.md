@@ -38,6 +38,4 @@ const example=[
     const highlighter=new Highlighter(langInfoArray,theme)
     document.body.append(await highlighter.highlightToElement(example,'md'))
 })()
-
-// Of course, to run the above codes in browser, you need a bundler like webpack.
 ```

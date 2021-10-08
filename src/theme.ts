@@ -54,7 +54,7 @@ export function extractThemeFromVSCT(vsct:VSCT){
     return out
 }
 export async function extractThemeFromVSCTURLs(urls:string[],dir=''){
-    if(dir===''){
+    if(dir.length===0){
         dir=location.href
     }
     const out:Theme=[]
@@ -80,7 +80,7 @@ export async function extractThemeFromVSCTURLs(urls:string[],dir=''){
     return out
 }
 export async function extractThemeFromThemeURLs(urls:string[],dir=''){
-    if(dir===''){
+    if(dir.length===0){
         dir=location.href
     }
     const out:Theme=[]
