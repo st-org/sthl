@@ -2,18 +2,16 @@ import {Highlighter,css,extractLangInfoArrayFromVSCEURLs,extractThemeFromVSCTURL
 const style=document.createElement('style')
 style.textContent=css
 document.body.append(style)
-const example=[
-    '# Test',
-    '```ts',
-    'class Text{',
-    '    constructor(array?:string[]){',
-    '        for(const item of array??[]){',
-    '            console.log(item)',
-    '        }',
-    '    }',
-    '}',
-    '```'
-].join('\n')
+const example=`# Test
+\`\`\`ts
+class Text{
+    constructor(array?:string[]){
+        for(const item of array??[]){
+            console.log(item)
+        }
+    }
+}
+\`\`\``
 ;(async()=>{
     const langInfoArray=await extractLangInfoArrayFromVSCEURLs([
         'markdown-basics/package.json',
