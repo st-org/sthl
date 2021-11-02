@@ -54,13 +54,6 @@ export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir=''){
     for(const urlStr of urls){
         try{
             const url=new URL(urlStr,dir)
-            if(!url.pathname.endsWith('/package.json')){
-                if(url.pathname.endsWith('/')){
-                    url.pathname+='package.json'
-                }else{
-                    url.pathname+='/package.json'
-                }
-            }
             const res=await fetch(url.href)
             if(!res.ok){
                 continue

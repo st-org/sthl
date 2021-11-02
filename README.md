@@ -18,11 +18,11 @@ const example=[
 ].join('\n')
 ;(async()=>{
     const langInfoArray=await extractLangInfoArrayFromVSCEURLs([
-        'markdown-basics',
+        'markdown-basics/package.json',
     ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/')
     langInfoArray.push(...await extractLangInfoArrayFromVSCEURLs([
-        'https://cdn.jsdelivr.net/gh/microsoft/vscode-typescript-next'
-    ]))
+        'microsoft/vscode-typescript-next/package.json',
+    ],'https://cdn.jsdelivr.net/gh/'))
     langInfoArray.push({
         name:'markdown',
         alias:['md']
