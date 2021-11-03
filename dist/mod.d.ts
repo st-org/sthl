@@ -1,4 +1,4 @@
-import * as vsctm from 'vscode-textmate';
+import { IRawGrammar, Registry } from 'vscode-textmate';
 import { LangInfo } from './lang';
 import { Theme } from './theme';
 export * from './lang';
@@ -15,7 +15,10 @@ export declare class Highlighter {
     readonly languageNameToRootScopeName: {
         [key: string]: string | undefined;
     };
-    readonly registry: vsctm.Registry;
+    readonly scopeNameToGrammar: {
+        [key: string]: IRawGrammar | null | undefined;
+    };
+    readonly registry: Registry;
     constructor(langInfoArray: LangInfo[], theme?: Theme);
     highlightToDocumentFragment(text: string, languageName: string): Promise<DocumentFragment>;
     highlightToElement(text: string, languageName: string, forceBlock?: boolean): Promise<HTMLElement | HTMLPreElement>;

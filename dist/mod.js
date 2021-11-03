@@ -1,5 +1,5 @@
-import * as vsctm from 'vscode-textmate';
-import * as oniguruma from 'vscode-oniguruma';
+import { Registry, parseRawGrammar, INITIAL } from 'vscode-textmate';
+import { loadWASM, OnigScanner, OnigString } from 'vscode-oniguruma';
 import { parse } from 'json5';
 import { CommonEle, Span } from 'stce';
 export * from './lang';
@@ -7,13 +7,13 @@ export * from './theme';
 export { all as css } from './lib/css';
 async function createOnigLib() {
     const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.5.1/release/onig.wasm')).blob()).arrayBuffer();
-    await oniguruma.loadWASM(buffer);
+    await loadWASM(buffer);
     const onigLib = {
         createOnigScanner(patterns) {
-            return new oniguruma.OnigScanner(patterns);
+            return new OnigScanner(patterns);
         },
         createOnigString(s) {
-            return new oniguruma.OnigString(s);
+            return new OnigString(s);
         }
     };
     return onigLib;
@@ -33,23 +33,28 @@ export class Highlighter {
         this.scopeNameToInjectedScopeNames = {};
         this.scopeNameToSyntaxSrc = {};
         this.languageNameToRootScopeName = {};
-        this.registry = new vsctm.Registry({
+        this.scopeNameToGrammar = {};
+        this.registry = new Registry({
             onigLib: createOnigLib(),
             loadGrammar: async (scopeName) => {
+                let grammar = this.scopeNameToGrammar[scopeName];
+                if (grammar !== undefined) {
+                    return grammar;
+                }
                 const src = this.scopeNameToSyntaxSrc[scopeName];
                 if (src === undefined) {
-                    return null;
+                    return this.scopeNameToGrammar[scopeName] = null;
                 }
                 try {
                     const url = new URL(src);
                     const text = await (await fetch(src)).text();
                     if (url.pathname.endsWith('.json')) {
-                        return parse(text);
+                        return this.scopeNameToGrammar[scopeName] = parse(text);
                     }
-                    return vsctm.parseRawGrammar(text);
+                    return this.scopeNameToGrammar[scopeName] = parseRawGrammar(text);
                 }
                 catch (err) {
-                    return null;
+                    return this.scopeNameToGrammar[scopeName] = null;
                 }
             },
             getInjections: scopeName => {
@@ -95,7 +100,7 @@ export class Highlighter {
         }
         const lines = text.split('\n');
         const out = new DocumentFragment();
-        let ruleStack = vsctm.INITIAL;
+        let ruleStack = INITIAL;
         for (const line of lines) {
             let contentStart = false;
             const lineSpan = new Span(['line']);
