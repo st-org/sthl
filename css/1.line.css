@@ -7,10 +7,3 @@ pre>.line>.content {
     display: inline-block;
     white-space: pre-wrap;
 }
-
-pre>.line>.content>*::after {
-    content: " ";
-    display: inline-block;
-    width: 0;
-    height: 0;
-}

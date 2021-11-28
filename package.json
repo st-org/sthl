@@ -17,18 +17,18 @@
   },
   "homepage": "https://github.com/st-org/sthl#readme",
   "devDependencies": {
-    "@ddu6/pkg-tools": "^0.0.6",
-    "@types/node": "^16.11.6",
+    "@ddu6/pkg-tools": "^0.0.9",
+    "@types/node": "^16.11.10",
     "ts-loader": "^9.2.6",
-    "typescript": "^4.4.4",
-    "webpack": "^5.61.0",
+    "typescript": "^4.5.2",
+    "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
     "json5": "^2.2.0",
-    "stce": "^0.0.7",
-    "vscode-oniguruma": "^1.5.1",
-    "vscode-textmate": "^5.4.1"
+    "stce": "^0.0.9",
+    "vscode-oniguruma": "^1.6.1",
+    "vscode-textmate": "^5.5.0"
   },
   "engines": {
     "node": ">=14.0.0",

@@ -1,4 +1,4 @@
-import {Highlighter,css,extractLangInfoArrayFromVSCEURLs,extractThemeFromVSCTURLs} from '../dist/mod'
+import {Highlighter,css,extractLangInfoArrayFromVSCEURLs,extractThemeFromVSCTURLs} from '../mod.js'
 const style=document.createElement('style')
 style.textContent=css
 document.body.append(style)
