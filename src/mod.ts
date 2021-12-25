@@ -8,7 +8,7 @@ export * from './lang'
 export * from './theme'
 export {all as css} from './lib/css'
 async function createOnigLib(){
-    const buffer=await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.5.1/release/onig.wasm')).blob()).arrayBuffer()
+    const buffer=await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.6.1/release/onig.wasm')).blob()).arrayBuffer()
     await loadWASM(buffer)
     const onigLib:IOnigLib={
         createOnigScanner(patterns){
