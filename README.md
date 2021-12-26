@@ -2,7 +2,7 @@
 ```js
 import {Highlighter,css,extractLangInfoArrayFromVSCEURLs,extractThemeFromVSCTURLs} from 'sthl'
 const style=document.createElement('style')
-style.textContent=css.all
+style.textContent=css
 document.body.append(style)
 const example=`# Test
 \`\`\`ts

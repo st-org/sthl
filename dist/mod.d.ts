@@ -3,7 +3,7 @@ import { LangInfo } from './lang';
 import { Theme } from './theme';
 export * from './lang';
 export * from './theme';
-export * as css from './lib/css';
+export { all as css } from './lib/css';
 export declare function textToHTML(text: string, addWordBreak?: boolean): string;
 export declare function textToPlainDocumentFragment(text: string): DocumentFragment;
 export declare function textToPlainElement(text: string, forceBlock?: boolean): HTMLElement;

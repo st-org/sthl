@@ -3,7 +3,7 @@ import { loadWASM, OnigScanner, OnigString } from 'vscode-oniguruma';
 import { INITIAL, parseRawGrammar, Registry } from 'vscode-textmate';
 export * from './lang';
 export * from './theme';
-export * as css from './lib/css';
+export { all as css } from './lib/css';
 async function createOnigLib() {
     const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.6.1/release/onig.wasm')).blob()).arrayBuffer();
     await loadWASM(buffer);
