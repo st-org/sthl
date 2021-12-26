@@ -1,15 +1,15 @@
 module.exports = {
     entry: './dist/mod.js',
-    mode: 'production',
     experiments: {
         outputModule: true
     },
+    mode: 'production',
     output: {
         filename: 'mod.js',
-        path: __dirname,
         library: {
             type: 'module'
         },
-        module: true
+        module: true,
+        path: __dirname
     }
 }
