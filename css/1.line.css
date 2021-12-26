@@ -1,5 +1,5 @@
 pre>.line {
-    display: block;
+    display: flex;
     white-space: pre;
 }
 
