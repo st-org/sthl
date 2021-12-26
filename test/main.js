@@ -1,6 +1,6 @@
 import {Highlighter,css,extractLangInfoArrayFromVSCEURLs,extractThemeFromVSCTURLs} from '../mod.js'
 const style=document.createElement('style')
-style.textContent=css
+style.textContent=css.all
 document.body.append(style)
 const example=`# Test
 \`\`\`ts
