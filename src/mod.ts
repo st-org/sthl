@@ -19,14 +19,39 @@ async function createOnigLib(){
     }
     return onigLib
 }
-function textToHTML(text:string) {
+export function textToHTML(text:string,addWordBreak=false) {
     const lookup:Record<string,string>={
         '&':"&amp;",
         '"':"&quot;",
         '<':"&lt;",
         '>':"&gt;"
-    };
-    return text.replace(/[&"<>]/g,c=>lookup[c])
+    }
+    text=text.replace(/[&"<>]/g,c=>lookup[c])
+    if(addWordBreak){
+        return text.replace(/(\/+|[(){}\[\]])/g,'$1<wbr>')
+    }
+    return text
+}
+export function textToPlainDocumentFragment(text:string){
+    const lines=text.split('\n')
+    const out=new DocumentFragment()
+    for(const line of lines){
+        const content=line.trimStart()
+        const lineSpan=document.createElement('span')
+        const contentSpan=document.createElement('span')
+        lineSpan.classList.add('line')
+        contentSpan.classList.add('content')
+        lineSpan.textContent=line.slice(0,line.length-content.length)
+        contentSpan.innerHTML=textToHTML(content,true)
+        out.append(lineSpan)
+        lineSpan.append(contentSpan)
+    }
+    return out
+}
+export function textToPlainElement(text:string,forceBlock=false){
+    const element=(forceBlock||text.includes('\n')?document.createElement('pre'):document.createElement('code'))
+    element.append(textToPlainDocumentFragment(text))
+    return element
 }
 export class Highlighter{
     readonly scopeNameToInjectedScopeNames:{
@@ -96,27 +121,9 @@ export class Highlighter{
             }
         }
     }
-    textToPlainDocumentFragment(text:string){
-        const lines=text.split('\n')
-        const out=new DocumentFragment()
-        for(const line of lines){
-            const content=line.trimStart()
-            const lineSpan=document.createElement('span')
-            const contentSpan=document.createElement('span')
-            lineSpan.classList.add('line')
-            contentSpan.classList.add('content')
-            lineSpan.textContent=line.slice(0,line.length-content.length)
-            contentSpan.innerHTML=textToHTML(content).replace(/(\/+|[(){}\[\]])/g,'$1<wbr>')
-            out.append(lineSpan)
-            lineSpan.append(contentSpan)
-        }
-        return out
-    }
-    textToPlainElement(text:string,forceBlock=false){
-        const element=(forceBlock||text.includes('\n')?document.createElement('pre'):document.createElement('code'))
-        element.append(this.textToPlainDocumentFragment(text))
-        return element
-    }
+    textToHTML=textToHTML
+    textToPlainDocumentFragment=textToPlainDocumentFragment
+    textToPlainElement=textToPlainElement
     async highlightToDocumentFragment(text:string,languageName:string){
         const rootScopeName=this.languageNameToRootScopeName[languageName]
         if(rootScopeName===undefined){
@@ -142,7 +149,7 @@ export class Highlighter{
                     contentStart=true
                 }
                 const tokenSpan=document.createElement('span')
-                tokenSpan.innerHTML=textToHTML(text).replace(/(\/+|[(){}\[\]])/g,'$1<wbr>')
+                tokenSpan.innerHTML=textToHTML(text,true)
                 for(const scope of token.scopes){
                     let usedScope=''
                     for(const {scopeNames,style} of this.theme){
