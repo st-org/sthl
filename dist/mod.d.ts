@@ -3,7 +3,7 @@ import { LangInfo } from './lang';
 import { Theme } from './theme';
 export * from './lang';
 export * from './theme';
-export { all as css } from './lib/css';
+export * as css from './lib/css';
 export declare class Highlighter {
     readonly theme: Theme;
     readonly scopeNameToInjectedScopeNames: {
@@ -20,8 +20,8 @@ export declare class Highlighter {
     };
     readonly registry: Registry;
     constructor(langInfoArray: LangInfo[], theme?: Theme);
+    textToPlainDocumentFragment(text: string): DocumentFragment;
+    textToPlainElement(text: string, forceBlock?: boolean): HTMLElement;
     highlightToDocumentFragment(text: string, languageName: string): Promise<DocumentFragment>;
-    highlightToElement(text: string, languageName: string, forceBlock?: boolean): Promise<HTMLElement | HTMLPreElement>;
-    static textToPlainDocumentFragment(text: string): DocumentFragment;
-    static textToPlainElement(text: string, forceBlock?: boolean): HTMLElement | HTMLPreElement;
+    highlightToElement(text: string, languageName: string, forceBlock?: boolean): Promise<HTMLElement>;
 }

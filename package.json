@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "json5": "^2.2.0",
-    "stce": "^0.0.9",
     "vscode-oniguruma": "^1.6.1",
     "vscode-textmate": "^6.0.0"
   },

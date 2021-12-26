@@ -1,10 +1,9 @@
-import { Registry, parseRawGrammar, INITIAL } from 'vscode-textmate';
-import { loadWASM, OnigScanner, OnigString } from 'vscode-oniguruma';
 import { parse } from 'json5';
-import { CommonEle, Span } from 'stce';
+import { loadWASM, OnigScanner, OnigString } from 'vscode-oniguruma';
+import { INITIAL, parseRawGrammar, Registry } from 'vscode-textmate';
 export * from './lang';
 export * from './theme';
-export { all as css } from './lib/css';
+export * as css from './lib/css';
 async function createOnigLib() {
     const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.6.1/release/onig.wasm')).blob()).arrayBuffer();
     await loadWASM(buffer);
@@ -89,31 +88,53 @@ export class Highlighter {
             }
         }
     }
+    textToPlainDocumentFragment(text) {
+        const lines = text.split('\n');
+        const out = new DocumentFragment();
+        for (const line of lines) {
+            const content = line.trimStart();
+            const lineSpan = document.createElement('span');
+            const contentSpan = document.createElement('span');
+            lineSpan.classList.add('line');
+            contentSpan.classList.add('content');
+            lineSpan.textContent = line.slice(0, line.length - content.length);
+            contentSpan.innerHTML = textToHTML(content).replace(/(\/+|[(){}\[\]])/g, '$1<wbr>');
+            out.append(lineSpan);
+            lineSpan.append(contentSpan);
+        }
+        return out;
+    }
+    textToPlainElement(text, forceBlock = false) {
+        const element = (forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code'));
+        element.append(this.textToPlainDocumentFragment(text));
+        return element;
+    }
     async highlightToDocumentFragment(text, languageName) {
         const rootScopeName = this.languageNameToRootScopeName[languageName];
         if (rootScopeName === undefined) {
-            return Highlighter.textToPlainDocumentFragment(text);
+            return this.textToPlainDocumentFragment(text);
         }
         const grammar = await this.registry.loadGrammar(rootScopeName);
         if (grammar === null) {
-            return Highlighter.textToPlainDocumentFragment(text);
+            return this.textToPlainDocumentFragment(text);
         }
         const lines = text.split('\n');
         const out = new DocumentFragment();
         let ruleStack = INITIAL;
         for (const line of lines) {
             let contentStart = false;
-            const lineSpan = new Span(['line']);
-            const contentSpan = new Span(['content']);
+            const lineSpan = document.createElement('span');
+            const contentSpan = document.createElement('span');
+            lineSpan.classList.add('line');
+            contentSpan.classList.add('content');
             const lineTokens = grammar.tokenizeLine(line, ruleStack);
             for (const token of lineTokens.tokens) {
                 const text = line.slice(token.startIndex, token.endIndex);
                 if (!contentStart && text.trim().length > 0) {
                     contentStart = true;
                 }
-                const tokenSpan = new Span()
-                    .setHTML(textToHTML(text)
-                    .replace(/(\/+|[(){}\[\]])/g, '$1<wbr>'));
+                const tokenSpan = document.createElement('span');
+                tokenSpan.innerHTML = textToHTML(text).replace(/(\/+|[(){}\[\]])/g, '$1<wbr>');
                 for (const scope of token.scopes) {
                     let usedScope = '';
                     for (const { scopeNames, style } of this.theme) {
@@ -144,34 +165,14 @@ export class Highlighter {
                 }
             }
             ruleStack = lineTokens.ruleStack;
-            out.append(lineSpan
-                .append(contentSpan)
-                .element);
+            out.append(lineSpan);
+            lineSpan.append(contentSpan);
         }
         return out;
     }
     async highlightToElement(text, languageName, forceBlock = false) {
-        return (forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code'))
-            .append(await this.highlightToDocumentFragment(text, languageName))
-            .element;
-    }
-    static textToPlainDocumentFragment(text) {
-        const lines = text.split('\n');
-        const out = new DocumentFragment();
-        for (const line of lines) {
-            const content = line.trimStart();
-            out.append(new Span(['line'])
-                .setText(line.slice(0, line.length - content.length))
-                .append(new Span(['content'])
-                .setHTML(textToHTML(content)
-                .replace(/(\/+|[(){}\[\]])/g, '$1<wbr>')))
-                .element);
-        }
-        return out;
-    }
-    static textToPlainElement(text, forceBlock = false) {
-        return (forceBlock || text.includes('\n') ? new CommonEle('pre') : new CommonEle('code'))
-            .append(Highlighter.textToPlainDocumentFragment(text))
-            .element;
+        const element = (forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code'));
+        element.append(await this.highlightToDocumentFragment(text, languageName));
+        return element;
     }
 }
