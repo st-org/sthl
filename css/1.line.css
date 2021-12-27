@@ -7,3 +7,7 @@ pre>.line>.content {
     display: inline-block;
     white-space: pre-wrap;
 }
+
+pre>.line>.content:empty::before {
+    content: " ";
+}

@@ -3,6 +3,7 @@ const style=document.createElement('style')
 style.textContent=css
 document.body.append(style)
 const example=`# Test
+
 \`\`\`ts
 class Text{
     constructor(array?:string[]){
@@ -11,7 +12,8 @@ class Text{
         }
     }
 }
-\`\`\``
+\`\`\`
+`
 const langInfoArray=await extractLangInfoArrayFromVSCEURLs([
     'markdown-basics/package.json',
 ],'https://cdn.jsdelivr.net/gh/microsoft/vscode/extensions/')
