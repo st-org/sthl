@@ -38,13 +38,15 @@ export function textToPlainDocumentFragment(text:string){
     for(const line of lines){
         const content=line.trimStart()
         const lineSpan=document.createElement('span')
+        const indentSpan=document.createElement('span')
         const contentSpan=document.createElement('span')
         lineSpan.classList.add('line')
         contentSpan.classList.add('content')
-        lineSpan.textContent=line.slice(0,line.length-content.length)
-        contentSpan.innerHTML=textToHTML(content,true)
         out.append(lineSpan)
+        lineSpan.append(indentSpan)
         lineSpan.append(contentSpan)
+        indentSpan.textContent=line.slice(0,line.length-content.length)
+        contentSpan.innerHTML=textToHTML(content,true)
     }
     return out
 }
@@ -139,9 +141,13 @@ export class Highlighter{
         for (const line of lines) {
             let contentStart=false
             const lineSpan=document.createElement('span')
+            const indentSpan=document.createElement('span')
             const contentSpan=document.createElement('span')
             lineSpan.classList.add('line')
             contentSpan.classList.add('content')
+            out.append(lineSpan)
+            lineSpan.append(indentSpan)
+            lineSpan.append(contentSpan)
             const lineTokens = grammar.tokenizeLine(line, ruleStack)
             for (const token of lineTokens.tokens) {
                 const text=line.slice(token.startIndex,token.endIndex)
@@ -175,12 +181,10 @@ export class Highlighter{
                 if(contentStart){
                     contentSpan.append(tokenSpan)
                 }else{
-                    lineSpan.append(tokenSpan)
+                    indentSpan.append(tokenSpan)
                 }
             }
             ruleStack = lineTokens.ruleStack
-            out.append(lineSpan)
-            lineSpan.append(contentSpan)
         }
         return out
     }

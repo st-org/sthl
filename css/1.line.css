@@ -3,8 +3,11 @@ pre>.line {
     white-space: pre;
 }
 
+pre>.line>span {
+    display: block;
+}
+
 pre>.line>.content {
-    display: inline-block;
     white-space: pre-wrap;
 }
 

@@ -34,3 +34,4 @@ document.body.style.background='#1E1E1E'
 document.body.style.color='#D4D4D4'
 const highlighter=new Highlighter(langInfoArray,theme)
 document.body.append(await highlighter.highlightToElement(example,'md'))
+document.body.append(highlighter.textToPlainElement(example))
