@@ -54,6 +54,7 @@ export function textToPlainDocumentFragment(text:string,forceBlock=false){
         const span=document.createElement('span')
         span.style.display='inline-block'
         span.style.width='0'
+        span.style.lineHeight='0'
         span.textContent=indent
         div.prepend(span)
     }
@@ -206,6 +207,7 @@ export class Highlighter{
             const span=document.createElement('span')
             span.style.display='inline-block'
             span.style.width='0'
+            span.style.lineHeight='0'
             span.textContent=indent
             div.prepend(span)
         }
