@@ -5,7 +5,7 @@ export * from './lang';
 export * from './theme';
 export { all as css } from './lib/css';
 export declare function textToHTML(text: string, addWordBreak?: boolean): string;
-export declare function textToPlainDocumentFragment(text: string): DocumentFragment;
+export declare function textToPlainDocumentFragment(text: string, forceBlock?: boolean): DocumentFragment;
 export declare function textToPlainElement(text: string, forceBlock?: boolean): HTMLElement;
 export declare class Highlighter {
     readonly theme: Theme;
@@ -26,6 +26,6 @@ export declare class Highlighter {
     textToHTML: typeof textToHTML;
     textToPlainDocumentFragment: typeof textToPlainDocumentFragment;
     textToPlainElement: typeof textToPlainElement;
-    highlightToDocumentFragment(text: string, languageName: string): Promise<DocumentFragment>;
+    highlightToDocumentFragment(text: string, languageName: string, forceBlock?: boolean): Promise<DocumentFragment>;
     highlightToElement(text: string, languageName: string, forceBlock?: boolean): Promise<HTMLElement>;
 }

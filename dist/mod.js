@@ -26,16 +26,16 @@ export function textToHTML(text, addWordBreak = false) {
     };
     text = text.replace(/[&"<>]/g, c => lookup[c]);
     if (addWordBreak) {
-        return text.replace(/(\/+|[(){}\[\]])/g, '$1<wbr>');
+        return text.replace(/(\/+|[\[\](){}])/g, '$1<wbr>');
     }
     return text;
 }
-export function textToPlainDocumentFragment(text) {
+export function textToPlainDocumentFragment(text, forceBlock = false) {
     const lines = text.split('\n');
+    const block = forceBlock || lines.length > 1;
     const out = new DocumentFragment();
     for (const line of lines) {
-        const content = line.trimStart();
-        const lineSpan = document.createElement('span');
+        const lineSpan = block ? document.createElement('div') : document.createElement('span');
         const indentSpan = document.createElement('span');
         const contentSpan = document.createElement('span');
         lineSpan.classList.add('line');
@@ -43,14 +43,15 @@ export function textToPlainDocumentFragment(text) {
         out.append(lineSpan);
         lineSpan.append(indentSpan);
         lineSpan.append(contentSpan);
+        const content = line.trimStart();
         indentSpan.textContent = line.slice(0, line.length - content.length);
         contentSpan.innerHTML = textToHTML(content, true);
     }
     return out;
 }
 export function textToPlainElement(text, forceBlock = false) {
-    const element = (forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code'));
-    element.append(textToPlainDocumentFragment(text));
+    const element = forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code');
+    element.append(textToPlainDocumentFragment(text, forceBlock));
     return element;
 }
 export class Highlighter {
@@ -118,21 +119,21 @@ export class Highlighter {
             }
         }
     }
-    async highlightToDocumentFragment(text, languageName) {
+    async highlightToDocumentFragment(text, languageName, forceBlock = false) {
         const rootScopeName = this.languageNameToRootScopeName[languageName];
         if (rootScopeName === undefined) {
-            return this.textToPlainDocumentFragment(text);
+            return textToPlainDocumentFragment(text, forceBlock);
         }
         const grammar = await this.registry.loadGrammar(rootScopeName);
         if (grammar === null) {
-            return this.textToPlainDocumentFragment(text);
+            return textToPlainDocumentFragment(text, forceBlock);
         }
         const lines = text.split('\n');
+        const block = forceBlock || lines.length > 1;
         const out = new DocumentFragment();
         let ruleStack = INITIAL;
         for (const line of lines) {
-            let contentStart = false;
-            const lineSpan = document.createElement('span');
+            const lineSpan = block ? document.createElement('div') : document.createElement('span');
             const indentSpan = document.createElement('span');
             const contentSpan = document.createElement('span');
             lineSpan.classList.add('line');
@@ -141,6 +142,7 @@ export class Highlighter {
             lineSpan.append(indentSpan);
             lineSpan.append(contentSpan);
             const lineTokens = grammar.tokenizeLine(line, ruleStack);
+            let contentStart = false;
             for (const token of lineTokens.tokens) {
                 const text = line.slice(token.startIndex, token.endIndex);
                 if (!contentStart && text.trim().length > 0) {
@@ -182,8 +184,8 @@ export class Highlighter {
         return out;
     }
     async highlightToElement(text, languageName, forceBlock = false) {
-        const element = (forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code'));
-        element.append(await this.highlightToDocumentFragment(text, languageName));
+        const element = forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code');
+        element.append(await this.highlightToDocumentFragment(text, languageName, forceBlock));
         return element;
     }
 }

@@ -1,16 +1,15 @@
-pre>.line {
-    display: flex;
+pre>div.line {
     white-space: pre;
 }
 
-pre>.line>span {
-    display: block;
+pre>div.line>span {
+    display: inline-block;
 }
 
-pre>.line>.content {
+pre>div.line>.content {
     white-space: pre-wrap;
 }
 
-pre>.line>.content:empty::before {
+pre>div.line>.content:empty::before {
     content: " ";
 }
