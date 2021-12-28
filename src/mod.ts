@@ -32,7 +32,11 @@ export function textToHTML(text:string,addWordBreak=false) {
     }
     return text
 }
+function replaceTabs(text:string){
+    return text.replace(/\t/g,'    ')
+}
 export function textToPlainDocumentFragment(text:string,forceBlock=false){
+    text=replaceTabs(text)
     const lines=text.split('\n')
     const out=new DocumentFragment()
     if(!(forceBlock||lines.length>1)){
@@ -164,6 +168,7 @@ export class Highlighter{
         return tokenSpan
     }
     async highlightToDocumentFragment(text:string,languageName:string,forceBlock=false){
+        text=replaceTabs(text)
         const rootScopeName=this.languageNameToRootScopeName[languageName]
         if(rootScopeName===undefined){
             return textToPlainDocumentFragment(text,forceBlock)

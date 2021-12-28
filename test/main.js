@@ -9,7 +9,7 @@ class Text{
     constructor(array?:string[]){
         for(const item of array??[]){
             console.log(item)
-        }
+\t    }
     }
 }
 \`\`\`
