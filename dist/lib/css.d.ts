@@ -1,2 +1,2 @@
-export declare const line = "pre>div.line {\n    white-space: pre;\n}\n\npre>div.line>span {\n    display: inline-block;\n}\n\npre>div.line>.content {\n    white-space: pre-wrap;\n}\n\npre>div.line>.content:empty::before {\n    content: \" \";\n}";
-export declare const all = "pre>div.line {\n    white-space: pre;\n}\n\npre>div.line>span {\n    display: inline-block;\n}\n\npre>div.line>.content {\n    white-space: pre-wrap;\n}\n\npre>div.line>.content:empty::before {\n    content: \" \";\n}";
+export declare const line = "pre>div.line:empty::before {\n    content: \" \";\n}";
+export declare const all = "pre>div.line:empty::before {\n    content: \" \";\n}";

@@ -26,6 +26,7 @@ export declare class Highlighter {
     textToHTML: typeof textToHTML;
     textToPlainDocumentFragment: typeof textToPlainDocumentFragment;
     textToPlainElement: typeof textToPlainElement;
+    createTokenSpan(text: string, scopes: string[]): HTMLSpanElement;
     highlightToDocumentFragment(text: string, languageName: string, forceBlock?: boolean): Promise<DocumentFragment>;
     highlightToElement(text: string, languageName: string, forceBlock?: boolean): Promise<HTMLElement>;
 }

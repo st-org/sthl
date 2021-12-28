@@ -32,20 +32,28 @@ export function textToHTML(text, addWordBreak = false) {
 }
 export function textToPlainDocumentFragment(text, forceBlock = false) {
     const lines = text.split('\n');
-    const block = forceBlock || lines.length > 1;
     const out = new DocumentFragment();
+    if (!(forceBlock || lines.length > 1)) {
+        const span = document.createElement('span');
+        span.innerHTML = textToHTML(text, true);
+        out.append(span);
+        return out;
+    }
     for (const line of lines) {
-        const lineSpan = block ? document.createElement('div') : document.createElement('span');
-        const indentSpan = document.createElement('span');
-        const contentSpan = document.createElement('span');
-        lineSpan.classList.add('line');
-        contentSpan.classList.add('content');
-        out.append(lineSpan);
-        lineSpan.append(indentSpan);
-        lineSpan.append(contentSpan);
-        const content = line.trimStart();
-        indentSpan.textContent = line.slice(0, line.length - content.length);
-        contentSpan.innerHTML = textToHTML(content, true);
+        const div = document.createElement('div');
+        div.classList.add('line');
+        out.append(div);
+        if (line.length === 0) {
+            continue;
+        }
+        const indent = line.match(/^ */)[0];
+        div.style.marginLeft = `${indent.length}ch`;
+        div.innerHTML = textToHTML(line.slice(indent.length), true);
+        const span = document.createElement('span');
+        span.style.display = 'inline-block';
+        span.style.width = '0';
+        span.textContent = indent;
+        div.prepend(span);
     }
     return out;
 }
@@ -119,6 +127,33 @@ export class Highlighter {
             }
         }
     }
+    createTokenSpan(text, scopes) {
+        const tokenSpan = document.createElement('span');
+        tokenSpan.innerHTML = textToHTML(text, true);
+        for (const scope of scopes) {
+            let usedScope = '';
+            for (const { scopeNames, style } of this.theme) {
+                const matchScope = scopeNames.find(val => scope.startsWith(val));
+                if (matchScope === undefined || matchScope.length < usedScope.length) {
+                    continue;
+                }
+                usedScope = matchScope;
+                if (style.color !== undefined) {
+                    tokenSpan.style.color = style.color;
+                }
+                if (style.fontStyle !== undefined) {
+                    tokenSpan.style.fontStyle = style.fontStyle;
+                }
+                if (style.fontWeight !== undefined) {
+                    tokenSpan.style.fontWeight = style.fontWeight;
+                }
+                if (style.textDecoration !== undefined) {
+                    tokenSpan.style.textDecoration = style.textDecoration;
+                }
+            }
+        }
+        return tokenSpan;
+    }
     async highlightToDocumentFragment(text, languageName, forceBlock = false) {
         const rootScopeName = this.languageNameToRootScopeName[languageName];
         if (rootScopeName === undefined) {
@@ -129,57 +164,42 @@ export class Highlighter {
             return textToPlainDocumentFragment(text, forceBlock);
         }
         const lines = text.split('\n');
-        const block = forceBlock || lines.length > 1;
         const out = new DocumentFragment();
         let ruleStack = INITIAL;
+        if (!(forceBlock || lines.length > 1)) {
+            for (const token of grammar.tokenizeLine(text, ruleStack).tokens) {
+                out.append(this.createTokenSpan(text.slice(token.startIndex, token.endIndex), token.scopes));
+            }
+            return out;
+        }
         for (const line of lines) {
-            const lineSpan = block ? document.createElement('div') : document.createElement('span');
-            const indentSpan = document.createElement('span');
-            const contentSpan = document.createElement('span');
-            lineSpan.classList.add('line');
-            contentSpan.classList.add('content');
-            out.append(lineSpan);
-            lineSpan.append(indentSpan);
-            lineSpan.append(contentSpan);
+            const div = document.createElement('div');
+            div.classList.add('line');
+            out.append(div);
             const lineTokens = grammar.tokenizeLine(line, ruleStack);
+            let indent = '';
             let contentStart = false;
             for (const token of lineTokens.tokens) {
                 const text = line.slice(token.startIndex, token.endIndex);
-                if (!contentStart && text.trim().length > 0) {
+                if (!contentStart) {
+                    if (text.match(/[^ ]/) === null) {
+                        indent += text;
+                        continue;
+                    }
                     contentStart = true;
                 }
-                const tokenSpan = document.createElement('span');
-                tokenSpan.innerHTML = textToHTML(text, true);
-                for (const scope of token.scopes) {
-                    let usedScope = '';
-                    for (const { scopeNames, style } of this.theme) {
-                        const matchScope = scopeNames.find(val => scope.startsWith(val));
-                        if (matchScope === undefined || matchScope.length < usedScope.length) {
-                            continue;
-                        }
-                        usedScope = matchScope;
-                        if (style.color !== undefined) {
-                            tokenSpan.style.color = style.color;
-                        }
-                        if (style.fontStyle !== undefined) {
-                            tokenSpan.style.fontStyle = style.fontStyle;
-                        }
-                        if (style.fontWeight !== undefined) {
-                            tokenSpan.style.fontWeight = style.fontWeight;
-                        }
-                        if (style.textDecoration !== undefined) {
-                            tokenSpan.style.textDecoration = style.textDecoration;
-                        }
-                    }
-                }
-                if (contentStart) {
-                    contentSpan.append(tokenSpan);
-                }
-                else {
-                    indentSpan.append(tokenSpan);
-                }
+                div.append(this.createTokenSpan(text, token.scopes));
             }
             ruleStack = lineTokens.ruleStack;
+            if (line.length === 0) {
+                continue;
+            }
+            div.style.marginLeft = `${indent.length}ch`;
+            const span = document.createElement('span');
+            span.style.display = 'inline-block';
+            span.style.width = '0';
+            span.textContent = indent;
+            div.prepend(span);
         }
         return out;
     }
