@@ -4,19 +4,6 @@ import { INITIAL, parseRawGrammar, Registry } from 'vscode-textmate';
 export * from './lang';
 export * from './theme';
 export { all as css } from './lib/css';
-async function createOnigLib() {
-    const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.6.1/release/onig.wasm')).blob()).arrayBuffer();
-    await loadWASM(buffer);
-    const onigLib = {
-        createOnigScanner(patterns) {
-            return new OnigScanner(patterns);
-        },
-        createOnigString(s) {
-            return new OnigString(s);
-        }
-    };
-    return onigLib;
-}
 const addWordBreakChars = [
     '/',
     '(',
@@ -26,7 +13,7 @@ const addWordBreakChars = [
     '{',
     '}'
 ];
-function textToPlainInlineDocumentFragment(text, addWordBreak = false) {
+export function textToPlainInlineDocumentFragment(text, addWordBreak = false) {
     const out = new DocumentFragment();
     for (const char of text) {
         if (addWordBreak && addWordBreakChars.includes(char)) {
@@ -75,6 +62,19 @@ export function textToPlainElement(text, forceBlock = false) {
     const element = forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code');
     element.append(textToPlainDocumentFragment(text, forceBlock));
     return element;
+}
+async function createOnigLib() {
+    const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.6.1/release/onig.wasm')).blob()).arrayBuffer();
+    await loadWASM(buffer);
+    const onigLib = {
+        createOnigScanner(patterns) {
+            return new OnigScanner(patterns);
+        },
+        createOnigString(s) {
+            return new OnigString(s);
+        }
+    };
+    return onigLib;
 }
 export class Highlighter {
     constructor(langInfoArray, theme = []) {
