@@ -54,7 +54,7 @@ export function extractThemeFromVSCT(vsct:VSCT){
     return out
 }
 export async function extractThemeFromVSCTURLs(urls:string[],dir:string){
-    const out:Promise<Theme[]>[]=[]
+    const out:Promise<Theme>[]=[]
     for(const urlStr of urls){
         const url=new URL(urlStr,dir)
         out.push((async ()=>{
@@ -67,11 +67,11 @@ export async function extractThemeFromVSCTURLs(urls:string[],dir:string){
                 if(typeof vsct.include==='string'){
                     vsct.include=[vsct.include]
                 }
-                const out:Theme[]=[]
+                const out:Theme=[]
                 if(vsct.include!==undefined){
                     out.push(...await extractThemeFromVSCTURLs(vsct.include,url.href))
                 }
-                out.push(extractThemeFromVSCT(vsct))
+                out.push(...extractThemeFromVSCT(vsct))
                 return out
             }catch(err){
                 console.log(err)

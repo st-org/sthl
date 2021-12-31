@@ -19,5 +19,8 @@ export interface VSCT {
     }[];
 }
 export declare function extractThemeFromVSCT(vsct: VSCT): Theme;
-export declare function extractThemeFromVSCTURLs(urls: string[], dir: string): Promise<Theme[]>;
+export declare function extractThemeFromVSCTURLs(urls: string[], dir: string): Promise<{
+    scopeNames: string[];
+    style: Style;
+}[]>;
 export {};

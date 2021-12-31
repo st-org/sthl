@@ -54,7 +54,7 @@ export async function extractThemeFromVSCTURLs(urls, dir) {
                 if (vsct.include !== undefined) {
                     out.push(...await extractThemeFromVSCTURLs(vsct.include, url.href));
                 }
-                out.push(extractThemeFromVSCT(vsct));
+                out.push(...extractThemeFromVSCT(vsct));
                 return out;
             }
             catch (err) {
