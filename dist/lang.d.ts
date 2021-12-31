@@ -15,6 +15,6 @@ export interface VSCE {
         }[];
     };
 }
-export declare function extractLangInfoArrayFromVSCE(vsce: VSCE, dir?: string): LangInfo[];
-export declare function extractLangInfoArrayFromVSCEURLs(urls: string[], dir?: string): Promise<LangInfo[]>;
-export declare function extractLangInfoArrayFromLangsURLs(urls: string[], dir?: string): Promise<LangInfo[]>;
+export declare function extractLangInfoArrayFromVSCE(vsce: VSCE, dir: string): LangInfo[];
+export declare function extractLangInfoArrayFromVSCEURLs(urls: string[], dir: string): Promise<LangInfo[]>;
+export declare function extractLangInfoArrayFromLangsURLs(urls: string[], dir: string): Promise<LangInfo[]>;

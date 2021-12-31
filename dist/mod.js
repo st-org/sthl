@@ -13,10 +13,10 @@ const addWordBreakChars = [
     '{',
     '}'
 ];
-export function textToPlainInlineDocumentFragment(text, addWordBreak = false) {
+export function textToPlainInlineDocumentFragment(text, { document = window.document } = {}) {
     const out = new DocumentFragment();
     for (const char of text) {
-        if (addWordBreak && addWordBreakChars.includes(char)) {
+        if (addWordBreakChars.includes(char)) {
             out.append(document.createElement('wbr'));
             out.append(new Text(char));
             out.append(document.createElement('wbr'));
@@ -29,13 +29,13 @@ export function textToPlainInlineDocumentFragment(text, addWordBreak = false) {
 function replaceTabs(text) {
     return text.replace(/\t/g, '    ');
 }
-export function textToPlainDocumentFragment(text, forceBlock = false) {
+export function textToPlainDocumentFragment(text, { forceBlock = false, document = window.document } = {}) {
     text = replaceTabs(text);
     const lines = text.split('\n');
     const out = new DocumentFragment();
     if (!(forceBlock || lines.length > 1)) {
         const span = document.createElement('span');
-        span.append(textToPlainInlineDocumentFragment(text, true));
+        span.append(textToPlainInlineDocumentFragment(text, { document }));
         out.append(span);
         return out;
     }
@@ -48,7 +48,7 @@ export function textToPlainDocumentFragment(text, forceBlock = false) {
         }
         const indent = line.match(/^ */)[0];
         div.style.marginLeft = `${indent.length}ch`;
-        div.append(textToPlainInlineDocumentFragment(line.slice(indent.length), true));
+        div.append(textToPlainInlineDocumentFragment(line.slice(indent.length), { document }));
         const span = document.createElement('span');
         span.style.display = 'inline-block';
         span.style.width = '0';
@@ -58,9 +58,9 @@ export function textToPlainDocumentFragment(text, forceBlock = false) {
     }
     return out;
 }
-export function textToPlainElement(text, forceBlock = false) {
+export function textToPlainElement(text, { forceBlock = false, document = window.document } = {}) {
     const element = forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code');
-    element.append(textToPlainDocumentFragment(text, forceBlock));
+    element.append(textToPlainDocumentFragment(text, { forceBlock, document }));
     return element;
 }
 async function createOnigLib() {
@@ -141,9 +141,9 @@ export class Highlighter {
             }
         }
     }
-    createTokenSpan(text, scopes) {
+    createTokenSpan(text, scopes, { document = window.document } = {}) {
         const tokenSpan = document.createElement('span');
-        tokenSpan.append(textToPlainInlineDocumentFragment(text, true));
+        tokenSpan.append(textToPlainInlineDocumentFragment(text, { document }));
         for (const scope of scopes) {
             let usedScope = '';
             for (const { scopeNames, style } of this.theme) {
@@ -168,22 +168,22 @@ export class Highlighter {
         }
         return tokenSpan;
     }
-    async highlightToDocumentFragment(text, languageName, forceBlock = false) {
+    async highlightToDocumentFragment(text, languageName, { forceBlock = false, document = window.document } = {}) {
         text = replaceTabs(text);
         const rootScopeName = this.languageNameToRootScopeName[languageName];
         if (rootScopeName === undefined) {
-            return textToPlainDocumentFragment(text, forceBlock);
+            return textToPlainDocumentFragment(text, { forceBlock, document });
         }
         const grammar = await this.registry.loadGrammar(rootScopeName);
         if (grammar === null) {
-            return textToPlainDocumentFragment(text, forceBlock);
+            return textToPlainDocumentFragment(text, { forceBlock, document });
         }
         const lines = text.split('\n');
         const out = new DocumentFragment();
         let ruleStack = INITIAL;
         if (!(forceBlock || lines.length > 1)) {
             for (const token of grammar.tokenizeLine(text, ruleStack).tokens) {
-                out.append(this.createTokenSpan(text.slice(token.startIndex, token.endIndex), token.scopes));
+                out.append(this.createTokenSpan(text.slice(token.startIndex, token.endIndex), token.scopes, { document }));
             }
             return out;
         }
@@ -203,7 +203,7 @@ export class Highlighter {
                     }
                     contentStart = true;
                 }
-                div.append(this.createTokenSpan(text, token.scopes));
+                div.append(this.createTokenSpan(text, token.scopes, { document }));
             }
             ruleStack = lineTokens.ruleStack;
             if (line.length === 0) {
@@ -219,9 +219,9 @@ export class Highlighter {
         }
         return out;
     }
-    async highlightToElement(text, languageName, forceBlock = false) {
+    async highlightToElement(text, languageName, { forceBlock = false, document = window.document } = {}) {
         const element = forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code');
-        element.append(await this.highlightToDocumentFragment(text, languageName, forceBlock));
+        element.append(await this.highlightToDocumentFragment(text, languageName, { forceBlock, document }));
         return element;
     }
 }

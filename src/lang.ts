@@ -16,10 +16,7 @@ export interface VSCE{
         }[]
     }
 }
-export function extractLangInfoArrayFromVSCE(vsce:VSCE,dir=''){
-    if(dir.length===0){
-        dir=location.href
-    }
+export function extractLangInfoArrayFromVSCE(vsce:VSCE,dir:string){
     const {contributes}=vsce
     if(contributes===undefined){
         return []
@@ -46,10 +43,7 @@ export function extractLangInfoArrayFromVSCE(vsce:VSCE,dir=''){
     }
     return out
 }
-export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir=''){
-    if(dir.length===0){
-        dir=location.href
-    }
+export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir:string){
     const out:LangInfo[]=[]
     for(const urlStr of urls){
         try{
@@ -65,10 +59,7 @@ export async function extractLangInfoArrayFromVSCEURLs(urls:string[],dir=''){
     }
     return out
 }
-export async function extractLangInfoArrayFromLangsURLs(urls:string[],dir=''){
-    if(dir.length===0){
-        dir=location.href
-    }
+export async function extractLangInfoArrayFromLangsURLs(urls:string[],dir:string){
     const out:LangInfo[]=[]
     for(const urlStr of urls){
         try{

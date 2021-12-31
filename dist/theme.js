@@ -36,10 +36,7 @@ export function extractThemeFromVSCT(vsct) {
     }
     return out;
 }
-export async function extractThemeFromVSCTURLs(urls, dir = '') {
-    if (dir.length === 0) {
-        dir = location.href;
-    }
+export async function extractThemeFromVSCTURLs(urls, dir) {
     const out = [];
     for (const urlStr of urls) {
         try {
@@ -63,10 +60,7 @@ export async function extractThemeFromVSCTURLs(urls, dir = '') {
     }
     return out;
 }
-export async function extractThemeFromThemeURLs(urls, dir = '') {
-    if (dir.length === 0) {
-        dir = location.href;
-    }
+export async function extractThemeFromThemeURLs(urls, dir) {
     const out = [];
     for (const urlStr of urls) {
         try {
