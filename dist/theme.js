@@ -39,41 +39,29 @@ export function extractThemeFromVSCT(vsct) {
 export async function extractThemeFromVSCTURLs(urls, dir) {
     const out = [];
     for (const urlStr of urls) {
-        try {
-            const url = new URL(urlStr, dir);
-            const res = await fetch(url.href);
-            if (!res.ok) {
-                continue;
+        const url = new URL(urlStr, dir);
+        out.push((async () => {
+            try {
+                const res = await fetch(url.href);
+                if (!res.ok) {
+                    return [];
+                }
+                const vsct = parse(await res.text());
+                if (typeof vsct.include === 'string') {
+                    vsct.include = [vsct.include];
+                }
+                const out = [];
+                if (vsct.include !== undefined) {
+                    out.push(...await extractThemeFromVSCTURLs(vsct.include, url.href));
+                }
+                out.push(extractThemeFromVSCT(vsct));
+                return out;
             }
-            const vsct = parse(await res.text());
-            if (typeof vsct.include === 'string') {
-                vsct.include = [vsct.include];
+            catch (err) {
+                console.log(err);
+                return [];
             }
-            if (vsct.include !== undefined) {
-                out.push(...await extractThemeFromVSCTURLs(vsct.include, url.href));
-            }
-            out.push(...extractThemeFromVSCT(vsct));
-        }
-        catch (err) {
-            console.log(err);
-        }
+        })());
     }
-    return out;
-}
-export async function extractThemeFromThemeURLs(urls, dir) {
-    const out = [];
-    for (const urlStr of urls) {
-        try {
-            const url = new URL(urlStr, dir);
-            const res = await fetch(url.href);
-            if (!res.ok) {
-                continue;
-            }
-            out.push(...parse(await res.text()));
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-    return out;
+    return (await Promise.all(out)).flat();
 }

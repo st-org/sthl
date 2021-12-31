@@ -30,40 +30,20 @@ export function extractLangInfoArrayFromVSCE(vsce, dir) {
 export async function extractLangInfoArrayFromVSCEURLs(urls, dir) {
     const out = [];
     for (const urlStr of urls) {
-        try {
-            const url = new URL(urlStr, dir);
-            const res = await fetch(url.href);
-            if (!res.ok) {
-                continue;
-            }
-            out.push(...extractLangInfoArrayFromVSCE(parse(await res.text()), url.href));
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-    return out;
-}
-export async function extractLangInfoArrayFromLangsURLs(urls, dir) {
-    const out = [];
-    for (const urlStr of urls) {
-        try {
-            const url = new URL(urlStr, dir);
-            const res = await fetch(url.href);
-            if (!res.ok) {
-                continue;
-            }
-            const array = parse(await res.text());
-            for (const info of array) {
-                if (info.syntaxSrc !== undefined) {
-                    info.syntaxSrc = new URL(info.syntaxSrc, url).href;
+        const url = new URL(urlStr, dir);
+        out.push((async () => {
+            try {
+                const res = await fetch(url.href);
+                if (!res.ok) {
+                    return [];
                 }
+                return extractLangInfoArrayFromVSCE(parse(await res.text()), url.href);
             }
-            out.push(...array);
-        }
-        catch (err) {
-            console.log(err);
-        }
+            catch (err) {
+                console.log(err);
+                return [];
+            }
+        })());
     }
-    return out;
+    return (await Promise.all(out)).flat();
 }
