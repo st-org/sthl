@@ -19,18 +19,27 @@ async function createOnigLib(){
     }
     return onigLib
 }
-export function textToHTML(text:string,addWordBreak=false) {
-    const lookup={
-        '&':"&amp;",
-        '"':"&quot;",
-        '<':"&lt;",
-        '>':"&gt;"
+const addWordBreakChars=[
+    '/',
+    '(',
+    ')',
+    '[',
+    ']',
+    '{',
+    '}'
+]
+function textToPlainInlineDocumentFragment(text:string,addWordBreak=false){
+    const out=new DocumentFragment()
+    for(const char of text){
+        if(addWordBreak&&addWordBreakChars.includes(char)){
+            out.append(document.createElement('wbr'))
+            out.append(new Text(char))
+            out.append(document.createElement('wbr'))
+            continue
+        }
+        out.append(new Text(char))
     }
-    text=text.replace(/[&"<>]/g,c=>lookup[<'&'|'"'|'<'|'>'>c])
-    if(addWordBreak){
-        return text.replace(/(\/+|[\[\](){}])/g,'$1<wbr>')
-    }
-    return text
+    return out
 }
 function replaceTabs(text:string){
     return text.replace(/\t/g,'    ')
@@ -41,7 +50,7 @@ export function textToPlainDocumentFragment(text:string,forceBlock=false){
     const out=new DocumentFragment()
     if(!(forceBlock||lines.length>1)){
         const span=document.createElement('span')
-        span.innerHTML=textToHTML(text,true)
+        span.append(textToPlainInlineDocumentFragment(text,true))
         out.append(span)
         return out
     }
@@ -54,7 +63,7 @@ export function textToPlainDocumentFragment(text:string,forceBlock=false){
         }
         const indent=(<RegExpMatchArray>line.match(/^ */))[0]
         div.style.marginLeft=`${indent.length}ch`
-        div.innerHTML=textToHTML(line.slice(indent.length),true)
+        div.append(textToPlainInlineDocumentFragment(line.slice(indent.length),true))
         const span=document.createElement('span')
         span.style.display='inline-block'
         span.style.width='0'
@@ -137,12 +146,12 @@ export class Highlighter{
             }
         }
     }
-    textToHTML=textToHTML
+    textToPlainInlineDocumentFragment=textToPlainInlineDocumentFragment
     textToPlainDocumentFragment=textToPlainDocumentFragment
     textToPlainElement=textToPlainElement
     createTokenSpan(text:string,scopes:string[]){
         const tokenSpan=document.createElement('span')
-        tokenSpan.innerHTML=textToHTML(text,true)
+        tokenSpan.append(textToPlainInlineDocumentFragment(text,true))
         for(const scope of scopes){
             let usedScope=''
             for(const {scopeNames,style} of this.theme){

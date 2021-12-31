@@ -17,18 +17,27 @@ async function createOnigLib() {
     };
     return onigLib;
 }
-export function textToHTML(text, addWordBreak = false) {
-    const lookup = {
-        '&': "&amp;",
-        '"': "&quot;",
-        '<': "&lt;",
-        '>': "&gt;"
-    };
-    text = text.replace(/[&"<>]/g, c => lookup[c]);
-    if (addWordBreak) {
-        return text.replace(/(\/+|[\[\](){}])/g, '$1<wbr>');
+const addWordBreakChars = [
+    '/',
+    '(',
+    ')',
+    '[',
+    ']',
+    '{',
+    '}'
+];
+function textToPlainInlineDocumentFragment(text, addWordBreak = false) {
+    const out = new DocumentFragment();
+    for (const char of text) {
+        if (addWordBreak && addWordBreakChars.includes(char)) {
+            out.append(document.createElement('wbr'));
+            out.append(new Text(char));
+            out.append(document.createElement('wbr'));
+            continue;
+        }
+        out.append(new Text(char));
     }
-    return text;
+    return out;
 }
 function replaceTabs(text) {
     return text.replace(/\t/g, '    ');
@@ -39,7 +48,7 @@ export function textToPlainDocumentFragment(text, forceBlock = false) {
     const out = new DocumentFragment();
     if (!(forceBlock || lines.length > 1)) {
         const span = document.createElement('span');
-        span.innerHTML = textToHTML(text, true);
+        span.append(textToPlainInlineDocumentFragment(text, true));
         out.append(span);
         return out;
     }
@@ -52,7 +61,7 @@ export function textToPlainDocumentFragment(text, forceBlock = false) {
         }
         const indent = line.match(/^ */)[0];
         div.style.marginLeft = `${indent.length}ch`;
-        div.innerHTML = textToHTML(line.slice(indent.length), true);
+        div.append(textToPlainInlineDocumentFragment(line.slice(indent.length), true));
         const span = document.createElement('span');
         span.style.display = 'inline-block';
         span.style.width = '0';
@@ -101,7 +110,7 @@ export class Highlighter {
                 return this.scopeNameToInjectedScopeNames[scopeName];
             }
         });
-        this.textToHTML = textToHTML;
+        this.textToPlainInlineDocumentFragment = textToPlainInlineDocumentFragment;
         this.textToPlainDocumentFragment = textToPlainDocumentFragment;
         this.textToPlainElement = textToPlainElement;
         for (const { name, alias, scopeName, syntaxSrc } of langInfoArray) {
@@ -134,7 +143,7 @@ export class Highlighter {
     }
     createTokenSpan(text, scopes) {
         const tokenSpan = document.createElement('span');
-        tokenSpan.innerHTML = textToHTML(text, true);
+        tokenSpan.append(textToPlainInlineDocumentFragment(text, true));
         for (const scope of scopes) {
             let usedScope = '';
             for (const { scopeNames, style } of this.theme) {

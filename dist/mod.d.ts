@@ -4,7 +4,7 @@ import { Theme } from './theme';
 export * from './lang';
 export * from './theme';
 export { all as css } from './lib/css';
-export declare function textToHTML(text: string, addWordBreak?: boolean): string;
+declare function textToPlainInlineDocumentFragment(text: string, addWordBreak?: boolean): DocumentFragment;
 export declare function textToPlainDocumentFragment(text: string, forceBlock?: boolean): DocumentFragment;
 export declare function textToPlainElement(text: string, forceBlock?: boolean): HTMLElement;
 export declare class Highlighter {
@@ -23,7 +23,7 @@ export declare class Highlighter {
     };
     readonly registry: Registry;
     constructor(langInfoArray: LangInfo[], theme?: Theme);
-    textToHTML: typeof textToHTML;
+    textToPlainInlineDocumentFragment: typeof textToPlainInlineDocumentFragment;
     textToPlainDocumentFragment: typeof textToPlainDocumentFragment;
     textToPlainElement: typeof textToPlainElement;
     createTokenSpan(text: string, scopes: string[]): HTMLSpanElement;
