@@ -30,7 +30,7 @@ export declare class Highlighter {
         [key: string]: IRawGrammar | null | undefined;
     };
     readonly registry: Registry;
-    constructor(langInfoArray: LangInfo[], theme?: Theme);
+    constructor(langInfoArray: LangInfo[], theme: Theme);
     textToPlainInlineDocumentFragment: typeof textToPlainInlineDocumentFragment;
     textToPlainDocumentFragment: typeof textToPlainDocumentFragment;
     textToPlainElement: typeof textToPlainElement;

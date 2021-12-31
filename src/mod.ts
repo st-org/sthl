@@ -117,7 +117,7 @@ export class Highlighter{
             return this.scopeNameToInjectedScopeNames[scopeName]
         }
     })
-    constructor(langInfoArray:LangInfo[],readonly theme:Theme=[]){
+    constructor(langInfoArray:LangInfo[],readonly theme:Theme){
         for(const {name,alias,scopeName,syntaxSrc} of langInfoArray){
             if(scopeName!==undefined&&syntaxSrc!==undefined){
                 this.scopeNameToSyntaxSrc[scopeName]=syntaxSrc

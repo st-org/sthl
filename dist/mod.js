@@ -77,7 +77,7 @@ async function createOnigLib() {
     return onigLib;
 }
 export class Highlighter {
-    constructor(langInfoArray, theme = []) {
+    constructor(langInfoArray, theme) {
         this.theme = theme;
         this.scopeNameToInjectedScopeNames = {};
         this.scopeNameToSyntaxSrc = {};
