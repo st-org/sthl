@@ -13,7 +13,7 @@ const addWordBreakChars = [
     '{',
     '}'
 ];
-export function textToPlainInlineDocumentFragment(text, document) {
+export function textToPlainInlineDocumentFragment(text) {
     const out = new DocumentFragment();
     for (const char of text) {
         if (addWordBreakChars.includes(char)) {
@@ -29,13 +29,13 @@ export function textToPlainInlineDocumentFragment(text, document) {
 function replaceTabs(text) {
     return text.replace(/\t/g, '    ');
 }
-export function textToPlainDocumentFragment(text, forceBlock, document) {
+export function textToPlainDocumentFragment(text, forceBlock) {
     text = replaceTabs(text);
     const lines = text.split('\n');
     const out = new DocumentFragment();
     if (!(forceBlock || lines.length > 1)) {
         const span = document.createElement('span');
-        span.append(textToPlainInlineDocumentFragment(text, document));
+        span.append(textToPlainInlineDocumentFragment(text));
         out.append(span);
         return out;
     }
@@ -48,7 +48,7 @@ export function textToPlainDocumentFragment(text, forceBlock, document) {
         }
         const indent = line.match(/^ */)[0];
         div.style.marginLeft = `${indent.length}ch`;
-        div.append(textToPlainInlineDocumentFragment(line.slice(indent.length), document));
+        div.append(textToPlainInlineDocumentFragment(line.slice(indent.length)));
         const span = document.createElement('span');
         span.style.display = 'inline-block';
         span.style.width = '0';
@@ -58,9 +58,9 @@ export function textToPlainDocumentFragment(text, forceBlock, document) {
     }
     return out;
 }
-export function textToPlainElement(text, forceBlock, document) {
+export function textToPlainElement(text, forceBlock) {
     const element = forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code');
-    element.append(textToPlainDocumentFragment(text, forceBlock, document));
+    element.append(textToPlainDocumentFragment(text, forceBlock));
     return element;
 }
 async function createOnigLib() {
@@ -141,9 +141,9 @@ export class Highlighter {
             }
         }
     }
-    createTokenSpan(text, scopes, document) {
+    createTokenSpan(text, scopes) {
         const tokenSpan = document.createElement('span');
-        tokenSpan.append(textToPlainInlineDocumentFragment(text, document));
+        tokenSpan.append(textToPlainInlineDocumentFragment(text));
         for (const scope of scopes) {
             let usedScope = '';
             for (const { scopeNames, style } of this.theme) {
@@ -168,22 +168,22 @@ export class Highlighter {
         }
         return tokenSpan;
     }
-    async highlightToDocumentFragment(text, languageName, forceBlock, document) {
+    async highlightToDocumentFragment(text, languageName, forceBlock) {
         text = replaceTabs(text);
         const rootScopeName = this.languageNameToRootScopeName[languageName];
         if (rootScopeName === undefined) {
-            return textToPlainDocumentFragment(text, forceBlock, document);
+            return textToPlainDocumentFragment(text, forceBlock);
         }
         const grammar = await this.registry.loadGrammar(rootScopeName);
         if (grammar === null) {
-            return textToPlainDocumentFragment(text, forceBlock, document);
+            return textToPlainDocumentFragment(text, forceBlock);
         }
         const lines = text.split('\n');
         const out = new DocumentFragment();
         let ruleStack = INITIAL;
         if (!(forceBlock || lines.length > 1)) {
             for (const token of grammar.tokenizeLine(text, ruleStack).tokens) {
-                out.append(this.createTokenSpan(text.slice(token.startIndex, token.endIndex), token.scopes, document));
+                out.append(this.createTokenSpan(text.slice(token.startIndex, token.endIndex), token.scopes));
             }
             return out;
         }
@@ -203,7 +203,7 @@ export class Highlighter {
                     }
                     contentStart = true;
                 }
-                div.append(this.createTokenSpan(text, token.scopes, document));
+                div.append(this.createTokenSpan(text, token.scopes));
             }
             ruleStack = lineTokens.ruleStack;
             if (line.length === 0) {
@@ -219,9 +219,9 @@ export class Highlighter {
         }
         return out;
     }
-    async highlightToElement(text, languageName, forceBlock, document) {
+    async highlightToElement(text, languageName, forceBlock) {
         const element = forceBlock || text.includes('\n') ? document.createElement('pre') : document.createElement('code');
-        element.append(await this.highlightToDocumentFragment(text, languageName, forceBlock, document));
+        element.append(await this.highlightToDocumentFragment(text, languageName, forceBlock));
         return element;
     }
 }
