@@ -1,11 +1,10 @@
 import { IRawGrammar, Registry } from 'vscode-textmate';
+import { textToPlainInlineDocumentFragment, textToPlainDocumentFragment, textToPlainElement } from './base';
 import { LangInfo } from './lang';
 import { Theme } from './theme';
+export * from './base';
 export * from './lang';
 export * from './theme';
-export declare function textToPlainInlineDocumentFragment(text: string): DocumentFragment;
-export declare function textToPlainDocumentFragment(text: string, forceBlock: boolean): DocumentFragment;
-export declare function textToPlainElement(text: string, forceBlock: boolean): HTMLElement;
 export declare class Highlighter {
     readonly theme: Theme;
     readonly scopeNameToInjectedScopeNames: {
