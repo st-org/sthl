@@ -3,7 +3,6 @@ import { LangInfo } from './lang';
 import { Theme } from './theme';
 export * from './lang';
 export * from './theme';
-export { all as css } from './lib/css';
 export declare function textToPlainInlineDocumentFragment(text: string): DocumentFragment;
 export declare function textToPlainDocumentFragment(text: string, forceBlock: boolean): DocumentFragment;
 export declare function textToPlainElement(text: string, forceBlock: boolean): HTMLElement;

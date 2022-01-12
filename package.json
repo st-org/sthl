@@ -4,7 +4,7 @@
   "description": "Simple Text Syntax Highlighter",
   "main": "dist/mod.js",
   "scripts": {
-    "build": "pkg && tsc && webpack"
+    "build": "tsc && webpack"
   },
   "repository": {
     "type": "git",
@@ -12,9 +12,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@ddu6/pkg-tools": "^0.0.12",
     "typescript": "^4.5.4",
-    "webpack": "^5.65.0",
+    "webpack": "^5.66.0",
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {

@@ -5,7 +5,6 @@ import {LangInfo} from './lang'
 import {Theme} from './theme'
 export * from './lang'
 export * from './theme'
-export {all as css} from './lib/css'
 const addWordBreakChars = [
     '/',
     '(',
@@ -20,11 +19,11 @@ export function textToPlainInlineDocumentFragment(text: string) {
     for (const char of text) {
         if (addWordBreakChars.includes(char)) {
             out.append(document.createElement('wbr'))
-            out.append(new Text(char))
+            out.append(char)
             out.append(document.createElement('wbr'))
             continue
         }
-        out.append(new Text(char))
+        out.append(char)
     }
     return out
 }
@@ -35,7 +34,7 @@ export function textToPlainDocumentFragment(text: string, forceBlock: boolean) {
     text = replaceTabs(text)
     const lines = text.split('\n')
     const out = new DocumentFragment()
-    if (!(forceBlock || lines.length > 1)) {
+    if (!forceBlock && lines.length < 2) {
         const span = document.createElement('span')
         span.append(textToPlainInlineDocumentFragment(text))
         out.append(span)
@@ -43,9 +42,9 @@ export function textToPlainDocumentFragment(text: string, forceBlock: boolean) {
     }
     for (const line of lines) {
         const div = document.createElement('div')
-        div.classList.add('line')
         out.append(div)
         if (line.length === 0) {
+            div.textContent = '\n'
             continue
         }
         const indent = (<RegExpMatchArray>line.match(/^ */))[0]
@@ -189,7 +188,7 @@ export class Highlighter {
         const lines = text.split('\n')
         const out = new DocumentFragment()
         let ruleStack = INITIAL
-        if (!(forceBlock || lines.length > 1)) {
+        if (!forceBlock && lines.length < 2) {
             for (const token of grammar.tokenizeLine(text, ruleStack).tokens) {
                 out.append(this.createTokenSpan(text.slice(token.startIndex, token.endIndex), token.scopes))
             }
@@ -197,7 +196,6 @@ export class Highlighter {
         }
         for (const line of lines) {
             const div = document.createElement('div')
-            div.classList.add('line')
             out.append(div)
             const lineTokens = grammar.tokenizeLine(line, ruleStack)
             let indent = ''
@@ -215,6 +213,7 @@ export class Highlighter {
             }
             ruleStack = lineTokens.ruleStack
             if (line.length === 0) {
+                div.textContent = '\n'
                 continue
             }
             div.style.marginLeft = `${indent.length}ch`

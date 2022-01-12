@@ -1,7 +1,4 @@
-import {css, extractLangInfoArrayFromVSCEURLs, extractThemeFromVSCTURLs, Highlighter} from '../mod.js'
-const style = document.createElement('style')
-style.textContent = css
-document.body.append(style)
+import {extractLangInfoArrayFromVSCEURLs, extractThemeFromVSCTURLs, Highlighter} from '../mod.js'
 const example = `# Test
 
 \`\`\`ts
