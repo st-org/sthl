@@ -59,6 +59,9 @@ export class Highlighter {
             return this.scopeNameToInjectedScopeNames[scopeName]
         }
     })
+    readonly textToPlainInlineDocumentFragment = textToPlainInlineDocumentFragment
+    readonly textToPlainDocumentFragment = textToPlainDocumentFragment
+    readonly textToPlainElement = textToPlainElement
     constructor(langInfoArray: LangInfo[], readonly theme: Theme) {
         for (const {name, alias, scopeName, syntaxSrc} of langInfoArray) {
             if (scopeName !== undefined && syntaxSrc !== undefined) {
@@ -88,9 +91,6 @@ export class Highlighter {
             }
         }
     }
-    textToPlainInlineDocumentFragment = textToPlainInlineDocumentFragment
-    textToPlainDocumentFragment = textToPlainDocumentFragment
-    textToPlainElement = textToPlainElement
     createTokenSpan(text: string, scopes: string[]) {
         const tokenSpan = document.createElement('span')
         tokenSpan.append(textToPlainInlineDocumentFragment(text))

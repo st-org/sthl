@@ -20,10 +20,10 @@ export declare class Highlighter {
         [key: string]: IRawGrammar | null | undefined;
     };
     readonly registry: Registry;
+    readonly textToPlainInlineDocumentFragment: typeof textToPlainInlineDocumentFragment;
+    readonly textToPlainDocumentFragment: typeof textToPlainDocumentFragment;
+    readonly textToPlainElement: typeof textToPlainElement;
     constructor(langInfoArray: LangInfo[], theme: Theme);
-    textToPlainInlineDocumentFragment: typeof textToPlainInlineDocumentFragment;
-    textToPlainDocumentFragment: typeof textToPlainDocumentFragment;
-    textToPlainElement: typeof textToPlainElement;
     createTokenSpan(text: string, scopes: string[]): HTMLSpanElement;
     highlightToDocumentFragment(text: string, languageName: string, forceBlock: boolean): Promise<DocumentFragment>;
     highlightToElement(text: string, languageName: string, forceBlock: boolean): Promise<HTMLElement>;
