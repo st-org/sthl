@@ -1,7 +1,7 @@
-import { parse } from 'json5';
 import { loadWASM, OnigScanner, OnigString } from 'vscode-oniguruma';
 import { INITIAL, parseRawGrammar, Registry } from 'vscode-textmate';
 import { replaceTabs, textToPlainInlineDocumentFragment, textToPlainDocumentFragment, textToPlainElement } from './base';
+import { getMod } from './import';
 export * from './base';
 export * from './lang';
 export * from './theme';
@@ -40,7 +40,7 @@ export class Highlighter {
                     const url = new URL(src);
                     const text = await (await fetch(src)).text();
                     if (url.pathname.endsWith('.json')) {
-                        return this.scopeNameToGrammar[scopeName] = parse(text);
+                        return this.scopeNameToGrammar[scopeName] = (await getMod('json5')).default.parse(text);
                     }
                     return this.scopeNameToGrammar[scopeName] = parseRawGrammar(text);
                 }

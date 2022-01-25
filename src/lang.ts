@@ -1,4 +1,4 @@
-import {parse} from 'json5'
+import {getMod} from "./import"
 export interface LangInfo {
     name?: string
     alias?: string[]
@@ -53,7 +53,7 @@ export async function extractLangInfoArrayFromVSCEURLs(urls: string[], dir: stri
                 if (!res.ok) {
                     return []
                 }
-                return extractLangInfoArrayFromVSCE(parse(await res.text()), url.href)
+                return extractLangInfoArrayFromVSCE((await getMod('json5')).default.parse(await res.text()), url.href)
             } catch (err) {
                 console.log(err)
                 return []

@@ -1,4 +1,4 @@
-import {parse} from 'json5'
+import {getMod} from "./import"
 interface Style {
     color?: string
     fontStyle?: string
@@ -63,7 +63,7 @@ export async function extractThemeFromVSCTURLs(urls: string[], dir: string) {
                 if (!res.ok) {
                     return []
                 }
-                const vsct: VSCT = parse(await res.text())
+                const vsct: VSCT = (await getMod('json5')).default.parse(await res.text())
                 if (typeof vsct.include === 'string') {
                     vsct.include = [vsct.include]
                 }

@@ -1,4 +1,4 @@
-import { parse } from 'json5';
+import { getMod } from "./import";
 export function extractThemeFromVSCT(vsct) {
     const { tokenColors } = vsct;
     if (tokenColors === undefined) {
@@ -46,7 +46,7 @@ export async function extractThemeFromVSCTURLs(urls, dir) {
                 if (!res.ok) {
                     return [];
                 }
-                const vsct = parse(await res.text());
+                const vsct = (await getMod('json5')).default.parse(await res.text());
                 if (typeof vsct.include === 'string') {
                     vsct.include = [vsct.include];
                 }
