@@ -89,7 +89,7 @@ export class Highlighter {
         for (const scope of scopes) {
             let usedScope = '';
             for (const { scopeNames, style } of this.theme) {
-                const matchScope = scopeNames.find(val => scope.startsWith(val));
+                const matchScope = scopeNames.find(value => scope.startsWith(value));
                 if (matchScope === undefined || matchScope.length < usedScope.length) {
                     continue;
                 }
