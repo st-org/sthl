@@ -18,7 +18,7 @@
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "@ddu6/importer": "^0.0.2",
+    "@ddu6/importer": "^0.0.3",
     "vscode-oniguruma": "^1.6.1",
     "vscode-textmate": "^6.0.0"
   },
