@@ -16,7 +16,7 @@ export * from './lang';
 export * from './theme';
 function createOnigLib() {
     return __awaiter(this, void 0, void 0, function* () {
-        const buffer = yield (yield (yield fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.6.1/release/onig.wasm')).blob()).arrayBuffer();
+        const buffer = yield (yield (yield fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.7.0/release/onig.wasm')).blob()).arrayBuffer();
         yield loadWASM(buffer);
         const onigLib = {
             createOnigScanner(patterns) {

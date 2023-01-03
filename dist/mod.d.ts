@@ -1,4 +1,4 @@
-import { IRawGrammar, Registry } from 'vscode-textmate';
+import { Registry, RegistryOptions } from 'vscode-textmate';
 import { textToPlainInlineDocumentFragment, textToPlainDocumentFragment, textToPlainElement } from './base';
 import { LangInfo } from './lang';
 import { Theme } from './theme';
@@ -17,7 +17,7 @@ export declare class Highlighter {
         [key: string]: string | undefined;
     };
     readonly scopeNameToGrammar: {
-        [key: string]: IRawGrammar | null | undefined;
+        [key: string]: Awaited<ReturnType<RegistryOptions['loadGrammar']>>;
     };
     readonly registry: Registry;
     readonly textToPlainInlineDocumentFragment: typeof textToPlainInlineDocumentFragment;

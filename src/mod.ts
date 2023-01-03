@@ -1,5 +1,5 @@
 import {loadWASM, OnigScanner, OnigString} from 'vscode-oniguruma'
-import {INITIAL, IOnigLib, IRawGrammar, parseRawGrammar, Registry} from 'vscode-textmate'
+import {INITIAL, IOnigLib, parseRawGrammar, Registry, RegistryOptions} from 'vscode-textmate'
 import {replaceTabs, textToPlainInlineDocumentFragment, textToPlainDocumentFragment, textToPlainElement} from './base'
 import {getMod} from './import'
 import {LangInfo} from './lang'
@@ -8,7 +8,7 @@ export * from './base'
 export * from './lang'
 export * from './theme'
 async function createOnigLib() {
-    const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.6.1/release/onig.wasm')).blob()).arrayBuffer()
+    const buffer = await (await (await fetch('https://cdn.jsdelivr.net/npm/vscode-oniguruma@1.7.0/release/onig.wasm')).blob()).arrayBuffer()
     await loadWASM(buffer)
     const onigLib: IOnigLib = {
         createOnigScanner(patterns) {
@@ -31,7 +31,7 @@ export class Highlighter {
         [key: string]: string | undefined
     } = {}
     readonly scopeNameToGrammar: {
-        [key: string]: IRawGrammar | null | undefined
+        [key: string]: Awaited<ReturnType<RegistryOptions['loadGrammar']>>
     } = {}
     readonly registry = new Registry({
         onigLib: createOnigLib(),
