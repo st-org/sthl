@@ -4,7 +4,7 @@ interface Style {
     fontWeight?: string;
     textDecoration?: string;
 }
-export declare type Theme = {
+export type Theme = {
     scopeNames: string[];
     style: Style;
 }[];
